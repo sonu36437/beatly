@@ -1,32 +1,19 @@
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React from 'react';
-import { innertube } from '..';
-import TrackPlayer from 'react-native-track-player';
+import { player } from '../player/Player';
 
-export default function SongItem({song, index}: any) {
+ function SongItem({song, index,handleAddToQueue}:{song:any,index:number,handleAddToQueue:()=>void}) {
+
+    
 const playThisSong=async()=>{
-    const songId:string=song.id;
-    const response=await innertube.player(songId);
-     const audioOnlyLink=response.filter((item:any)=>{
-        return item.mimeType.includes("audio/webm")
 
-     })
-     console.log(audioOnlyLink[audioOnlyLink.length-1].url);
-     
+  if(player.getItemFromParticularIndex(index)?.id!==song.id){
+    player.resetTheQueue();
 
-    await TrackPlayer.reset();
-     await TrackPlayer.add({
-        id: song.id,
-        url: audioOnlyLink[audioOnlyLink.length-1].url,
-        title: song.title,
-        artist: song.artists,
-        artwork: song.thumbnails[0].url,
-       
-    });
-    await TrackPlayer.play();
-     
-     
-   
+  }
+  handleAddToQueue();
+  player.playSong(index);
+ 
 }
 
   return (
@@ -43,7 +30,7 @@ const playThisSong=async()=>{
         />
 
         <View style={styles.textContainer}>
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={styles.title} numberOfLines={3}>
             {song.title}
           </Text>
           <Text style={styles.artist} numberOfLines={1}>
@@ -58,24 +45,22 @@ const playThisSong=async()=>{
     </TouchableOpacity>
   );
 }
+export default React.memo(SongItem);
 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 4,
+    height:70,
+    padding: 2,
     borderRadius: 12,
-    marginBottom: 5,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    marginBottom: 20,
+    
   },
   artwork: {
-    width: 100,
-    height: 55,
+    width: 90,
+    height: 70,
     borderRadius: 8,
   },
   textContainer: {
@@ -85,12 +70,14 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
+
+    fontSize: 13,
+  fontFamily:'Rubik-Medium'
   },
   artist: {
-    color: '#a0a0a0',
+    color: 'gra',
     fontSize: 10,
+    fontFamily:'Rubik-SemiBoldItalic',
     marginTop: 4,
   },
   optionsButton: {

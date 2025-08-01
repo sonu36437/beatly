@@ -3,22 +3,19 @@ import {
     Text,
     StyleSheet,
     TextInput,
-    TouchableOpacity,
+ 
     FlatList,
     ActivityIndicator,
+
     Alert
   } from 'react-native';
   import React, {useEffect, useState} from 'react';
   import SongItem from '../components/SongItem';
   import {innertube} from '../index';
+import { player } from '../player/Player';
+
   
-  const renderItem = ({item,index}: any) => {
-    return (
-   
-        <SongItem song={item} index={index}/>
-   
-    );
-  };
+ 
   
   export default function SearchScreen() {
     const [input, setInput] = useState<string>('');
@@ -26,6 +23,8 @@ import {
     const [paginationToken, setPaginationToken] = useState<string | undefined>('');
     const [isLoading, setIsLoading] = useState(false);
     const [isMore, setIsMore] = useState(false);
+    const [error ,setError]=useState("");
+    
   
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -35,15 +34,19 @@ import {
       }, 500);
       return () => clearTimeout(timer);
     }, [input]);
+
+
+
   
     const search = async () => {
       setIsLoading(true);
       try {
-        const result = await innertube.search(input);
+        const result = await innertube.search(input+"song");
         setResult(result.results);
         setPaginationToken(result.continuationToken);
       } catch (error) {
         console.log(error);
+        setError(error);
       } finally {
         setIsLoading(false);
       }
@@ -62,6 +65,23 @@ import {
         setIsMore(false);
       }
     };
+   
+    const renderItem = ({item,index}: any) => {
+        return (
+       
+            <SongItem song={item} index={index} handleAddToQueue={()=>{
+                if(player.getQueueLength()==0 || player.getQueueLength()<index){
+                      player.addToQueue(result)
+                  
+                }
+            }}/>
+       
+        );
+      };
+      if(error){
+       Alert.alert(error.message);
+       setError("");
+      }
   
     return (
       <View style={styles.container}>
@@ -79,10 +99,21 @@ import {
             <FlatList
               data={result}
               renderItem={renderItem}
-              keyExtractor={item => item.id}
-              contentContainerStyle={{paddingBottom: 100, paddingTop: 20}}
+              keyExtractor={(item,index)=> item.id+index}
+              initialNumToRender={50}
+              maxToRenderPerBatch={50}
+              contentContainerStyle={{paddingBottom: 100, paddingTop: 40}}
               onEndReached={searchContinuation}
-              onEndReachedThreshold={0.5}
+              onEndReachedThreshold={0.8}
+              getItemLayout={(item,index)=>{
+                return{     
+                  length:70,
+                  offset:70*index,
+                  index:index
+                }
+              }}
+             
+            
               bounces={true}
               bouncesZoom={true}
               ListFooterComponent={isMore ? <ActivityIndicator color="white" /> : null}
@@ -100,23 +131,24 @@ import {
       paddingHorizontal: 10,
     },
     title: {
-      color: 'white',
-      fontSize: 30,
-      fontWeight: 'bold',
+      color: '#DB7093',
+      fontSize: 25,
+      fontFamily:'Rubik-Bold',
       textAlign: 'center',
       marginTop: 20,
     },
     input: {
-      color: 'white',
-      fontSize: 18,
-      borderWidth: 1,
-      borderColor: '#555',
-      borderRadius: 8,
+      color: 'black',
+      fontSize: 12,
+   
+   
+      borderRadius: 50,
+      fontFamily:'Rubik-Bold',
       padding: 15,
       textAlign: 'left',
       width: '100%',
       marginTop: 10,
-      backgroundColor: '#1c1c1c',
+      backgroundColor: 'white',
     },
   });
   
