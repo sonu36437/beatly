@@ -30,9 +30,6 @@ class Player{
 
      })
     
-     
-   
-
    await TrackPlayer.reset()
      await TrackPlayer.add({
         id: song.id,

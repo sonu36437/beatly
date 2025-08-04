@@ -41,8 +41,14 @@ import { player } from '../player/Player';
     const search = async () => {
       setIsLoading(true);
       try {
-        const result = await innertube.search(input+"song");
-        setResult(result.results);
+        const result = await innertube.search(input+" song");
+    
+        const videoGreaterThanSeventySeconds=result.results.filter((item:any)=>{
+         return item?.durationInSeconds>70
+        })
+      
+
+        setResult(videoGreaterThanSeventySeconds);
         setPaginationToken(result.continuationToken);
       } catch (error) {
         console.log(error);
@@ -57,7 +63,10 @@ import { player } from '../player/Player';
       setIsMore(true);
       try {
         const response = await innertube.fectchSearchContinuation(paginationToken);
-        setResult((prev:any)=> [...prev, ...response.results]);
+        const videoGreaterThanSeventySeconds=response.results.filter((item:any)=>{
+          return item?.durationInSeconds>70
+         })
+        setResult((prev:any)=> [...prev, ...videoGreaterThanSeventySeconds]);
         setPaginationToken(response.continuationToken);
       } catch (e) {
         Alert.alert('some issue occurred');
