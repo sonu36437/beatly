@@ -28,6 +28,25 @@
     "realm": "^20.1.0",
     "zustand": "^5.0.6"
   },
+"keywords": [
+  "beatly",
+  "music",
+  "music streaming",
+  "music app",
+  "ytdl",
+  "youtubedownloader",
+  "youtube-client",
+  "music player",
+  "react native music app",
+  "youtube audio",
+  "youtube music streaming",
+  "background music player",
+  "opensource music app",
+  "android music streaming",
+  "ios music player",
+  "onlynativetube",
+  "react native audio player"
+],
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
