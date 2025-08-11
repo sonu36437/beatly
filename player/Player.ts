@@ -5,9 +5,11 @@ import { Alert } from "react-native";
 class Player{
   private queue=[];
   private currentIndex:number;
+  public playingFromScreen:string;
   
   constructor(){
     this.currentIndex=-1;
+    this.playingFromScreen="";
   }
   public playSong(index:number,currentsongId?:string){
 
@@ -36,7 +38,7 @@ class Player{
         url: audioOnlyLink[audioOnlyLink.length-1].url,
         title: song.title,
         artist: song.artists,
-        artwork: song.thumbnails[0].url,
+        artwork: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork,
        
     });
    await TrackPlayer.play()

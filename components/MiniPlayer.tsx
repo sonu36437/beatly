@@ -13,8 +13,10 @@ import {
   import { usePlayerStore } from '../store/PlayerStore';
   import TrackPlayer, { Event } from 'react-native-track-player';
   import FullScreenPlayer from './FullScreenPlayer';
+  import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
   
  export function PlayButton({size=30}:{size:number}) {
+
     return (
       <View style={{ backgroundColor: 'red', height: size, width: size }} />
     );
@@ -37,17 +39,17 @@ import {
     const { isPlaying, currentTrack, setTrack, togglePlayPause } = usePlayerStore();
     const [isFullScreen, setIsFullScreen] = useState(false);
   
-    useEffect(() => {
-      const listener = TrackPlayer.addEventListener(
-        Event.PlaybackActiveTrackChanged,
-        async event => {
-          setTrack(event.track);
-        },
-      );
-      return () => {
-        listener.remove();
-      };
-    }, []);
+    // useEffect(() => {
+    //   const listener = TrackPlayer.addEventListener(
+    //     Event.PlaybackActiveTrackChanged,
+    //     async event => {
+    //       setTrack(event.track);
+    //     },
+    //   );
+    //   return () => {
+    //     listener.remove();
+    //   };
+    // }, []);
   
     useEffect(() => {
       const listener = TrackPlayer.addEventListener(
@@ -61,7 +63,7 @@ import {
       return () => {
         listener.remove();
       };
-    }, []);
+    }, [currentTrack]);
   
     return (
       <>
@@ -82,18 +84,22 @@ import {
                 overlayColor=""
                 reducedTransparencyFallbackColor="white"
               />
+     
               <View style={styles.content}>
                 <Image
                   source={{ uri: currentTrack?.artwork }}
                   style={styles.image}
                 />
-                <View style={{ width: '60%', marginRight: 15 }}>
+                <View style={{ width: '55%', marginRight: 15 }}>
                   <Text
                     style={styles.text}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
                     {currentTrack?.title || 'Unknown Title'}
+                  </Text>
+                  <Text style={{color:'gray',fontFamily:'Rubik-Regular',fontSize:12}} numberOfLines={1}>
+                    {currentTrack?.artist || 'Unknown Artist'}
                   </Text>
                 </View>
   
@@ -105,9 +111,12 @@ import {
                       TrackPlayer.play();
                     }
                   }}
+                  style={{padding:10,marginRight:20}}
+                
                 >
-                  {isPlaying ? <PauseButton /> : <PlayButton />}
+                  {isPlaying ? <MaterialCommunityIcons name="pause" size={30} color="skyblue" /> : <MaterialCommunityIcons name="play" size={30} color="red"/>}
                 </TouchableOpacity>
+                
               </View>
             </View>
       
@@ -129,12 +138,14 @@ import {
   const styles = StyleSheet.create({
     container: {
       position: 'absolute',
-      bottom: 10,
+      bottom: 72,
       width: '100%',
       height: 90,
       alignSelf: 'center',
       justifyContent: 'center',
       borderRadius: 20,
+      zIndex: 1, // ✅ Keep it lower than popup
+      elevation: 1, // ✅ For Android layering
     },
     blurWrapper: {
       flex: 1,

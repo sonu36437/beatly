@@ -6,13 +6,17 @@ import TrackPlayer, {useProgress, Event} from 'react-native-track-player';
 import {usePlayerStore} from '../store/PlayerStore';
 import {PauseButton, PlayButton} from './MiniPlayer';
 import {player} from '../player/Player';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${mins}:${secs < 10 ? '0' + secs : secs}`;
+  
 };
 
 export default function FullScreenPlayer({currentTrack}: any) {
+ 
   const progress = useProgress();
   const {togglePlayPause, isPlaying} = usePlayerStore();
   useEffect(() => {
@@ -37,6 +41,7 @@ export default function FullScreenPlayer({currentTrack}: any) {
         blurAmount={10}
         overlayColor=""
       />
+     
   
       <View style={styles.content}>
         <Image source={{ uri: currentTrack?.artwork }} style={styles.img} />
@@ -75,7 +80,7 @@ export default function FullScreenPlayer({currentTrack}: any) {
             }}
             style={[styles.roundButton, { backgroundColor: '#fff' }]}
           >
-            {isPlaying ? <PauseButton size={40} /> : <PlayButton size={40} />}
+            {isPlaying ? <MaterialCommunityIcons name="pause" size={40} color="black" /> : <MaterialCommunityIcons name="play"size={40}  color="black"/>}
           </TouchableOpacity>
   
           <TouchableOpacity onPress={() => player.playNext()} style={styles.roundButton}>
@@ -117,7 +122,7 @@ const styles = StyleSheet.create({
     },
     title: {
       color: 'white',
-      fontSize: 22,
+      fontSize: 15,
       fontFamily: 'Rubik-Bold',
       textAlign: 'center',
       marginBottom: 20,

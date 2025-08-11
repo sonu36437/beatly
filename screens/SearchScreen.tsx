@@ -13,6 +13,8 @@ import {
   import SongItem from '../components/SongItem';
   import {innertube} from '../index';
 import { player } from '../player/Player';
+import Modal from '../components/Modal';
+import PopUpScreen from './PopUpScreen';
 
   
  
@@ -24,6 +26,8 @@ import { player } from '../player/Player';
     const [isLoading, setIsLoading] = useState(false);
     const [isMore, setIsMore] = useState(false);
     const [error ,setError]=useState("");
+    const [clickedTrack,setClickedTrack]=useState<any>(null);
+    const [isModalVisible,setIsModalVisible]=useState(false);
     
   
     useEffect(() => {
@@ -41,7 +45,9 @@ import { player } from '../player/Player';
     const search = async () => {
       setIsLoading(true);
       try {
+     
         const result = await innertube.search(input+" song");
+        console.log(result);
     
         const videoGreaterThanSeventySeconds=result.results.filter((item:any)=>{
          return item?.durationInSeconds>70
@@ -51,7 +57,7 @@ import { player } from '../player/Player';
         setResult(videoGreaterThanSeventySeconds);
         setPaginationToken(result.continuationToken);
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
         setError(error);
       } finally {
         setIsLoading(false);
@@ -63,6 +69,8 @@ import { player } from '../player/Player';
       setIsMore(true);
       try {
         const response = await innertube.fectchSearchContinuation(paginationToken);
+      
+        
         const videoGreaterThanSeventySeconds=response.results.filter((item:any)=>{
           return item?.durationInSeconds>70
          })
@@ -78,12 +86,14 @@ import { player } from '../player/Player';
     const renderItem = ({item,index}: any) => {
         return (
        
-            <SongItem song={item} index={index} handleAddToQueue={()=>{
-                if(player.getQueueLength()==0 || player.getQueueLength()<index){
-                      player.addToQueue(result)
-                  
-                }
-            }}/>
+            <SongItem song={item} index={index}
+            // clickedOne={()=>{
+            //   setClickedTrack(item)
+            //   setIsModalVisible(true);
+            // }}
+            totalsongs={result}
+            playingFromScreen="search"
+            />
        
         );
       };
@@ -91,7 +101,7 @@ import { player } from '../player/Player';
        Alert.alert(error.message);
        setError("");
       }
-  
+
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Search for songs</Text>
@@ -111,7 +121,7 @@ import { player } from '../player/Player';
               keyExtractor={(item,index)=> item.id+index}
               initialNumToRender={50}
               maxToRenderPerBatch={50}
-              contentContainerStyle={{paddingBottom: 100, paddingTop: 40}}
+              contentContainerStyle={{paddingBottom: 200, paddingTop: 40}}
               onEndReached={searchContinuation}
               onEndReachedThreshold={0.8}
               getItemLayout={(item,index)=>{
@@ -129,6 +139,15 @@ import { player } from '../player/Player';
             />
           </View>
         )}
+        {/* <Modal
+         visible={isModalVisible} 
+         onRequestClose={()=>setIsModalVisible(false)}
+         animationType="fade"
+         children={<PopUpScreen track={clickedTrack}/>}
+         transparent={true}
+         statusBarTranslucent={true}
+
+          /> */}
       </View>
     );
   }

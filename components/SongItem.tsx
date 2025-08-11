@@ -1,20 +1,36 @@
-import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity, Alert, Pressable} from 'react-native';
 import React from 'react';
 import { player } from '../player/Player';
+import { useNavigation ,useRoute} from '@react-navigation/native';
+import { useModalStore } from '../store/ModalStore';
+import PopUpScreen from '../screens/PopUpScreen';
 
- function SongItem({song, index,handleAddToQueue}:{song:any,index:number,handleAddToQueue:()=>void}) {
+ function SongItem({song, index,clickedOne,totalsongs,playingFromScreen}:{song:any,index:number,clickedOne?:()=>void,totalsongs:any,playingFromScreen:string}) {
 
     
 const playThisSong=async()=>{
+  if(player.playingFromScreen!==playingFromScreen){
+    player.resetTheQueue();
+  }
+  if(player.getQueueLength()==0 || player.getQueueLength()<index){
+    player.addToQueue(totalsongs)
+
+}
+
 
   if(player.getItemFromParticularIndex(index)?.id!==song.id){
     player.resetTheQueue();
 
   }
-  handleAddToQueue();
+
   player.playSong(index);
+  player.playingFromScreen=playingFromScreen;
+
  
 }
+const {isModalOpen,openModal,closeModal,content} = useModalStore();
+
+
 
   return (
     <TouchableOpacity
@@ -24,7 +40,7 @@ const playThisSong=async()=>{
    
       <View style={styles.container}>
         <Image
-          source={{uri: song.thumbnails[0].url}}
+          source={{uri: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork}}
           style={styles.artwork}
           resizeMode="cover"
         />
@@ -38,9 +54,12 @@ const playThisSong=async()=>{
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.optionsButton}>
+        <Pressable style={styles.optionsButton} onPress={()=>{ 
+          openModal(<PopUpScreen track={song}/>) 
+   
+        }} >
           <Text style={styles.optionsText}>•••</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </TouchableOpacity>
   );
