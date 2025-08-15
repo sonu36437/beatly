@@ -5,39 +5,15 @@ import { useNavigation ,useRoute} from '@react-navigation/native';
 import { useModalStore } from '../store/ModalStore';
 import PopUpScreen from '../screens/PopUpScreen';
 
- function SongItem({song, index,clickedOne,totalsongs,playingFromScreen}:{song:any,index:number,clickedOne?:()=>void,totalsongs:any,playingFromScreen:string}) {
+ function SongItem({song,clickedOne}:{song:any,clickedOne?:()=>void}) {
 
-    
-const playThisSong=async()=>{
-  if(player.playingFromScreen!==playingFromScreen){
-    player.resetTheQueue();
-  }
-  if(player.getQueueLength()==0 || player.getQueueLength()<index){
-    player.addToQueue(totalsongs)
-
-}
-
-
-  if(player.getItemFromParticularIndex(index)?.id!==song.id){
-    player.resetTheQueue();
-
-  }
-
-  player.playSong(index);
-  player.playingFromScreen=playingFromScreen;
-
- 
-}
-const {isModalOpen,openModal,closeModal,content} = useModalStore();
-
-
-
+const {openModal} = useModalStore();
   return (
     <TouchableOpacity
-    onPress={playThisSong}
+    onPress={clickedOne}
     >
-    
-   
+
+
       <View style={styles.container}>
         <Image
           source={{uri: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork}}
@@ -54,9 +30,10 @@ const {isModalOpen,openModal,closeModal,content} = useModalStore();
           </Text>
         </View>
 
-        <Pressable style={styles.optionsButton} onPress={()=>{ 
-          openModal(<PopUpScreen track={song}/>) 
-   
+        <Pressable style={styles.optionsButton} onPress={()=>{
+            console.log(song)
+          openModal(<PopUpScreen track={song}/>)
+
         }} >
           <Text style={styles.optionsText}>•••</Text>
         </Pressable>
@@ -75,7 +52,7 @@ const styles = StyleSheet.create({
     padding: 2,
     borderRadius: 12,
     marginBottom: 20,
-    
+
   },
   artwork: {
     width: 90,

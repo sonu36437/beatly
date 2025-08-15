@@ -5,10 +5,10 @@ import PopUpScreen from './PopUpScreen'
 export default function Home() {
   return (
         <>
-      <View style={{flex:1,backgroundColor:'green',alignItems:'center',justifyContent:'center'}}>
+      <View style={{flex:1,backgroundColor:'black',alignItems:'center',justifyContent:'center'}}>
           <Text style={{color:'white'}}>Home</Text>
         </View>
-  
+
         </>
   )
 }

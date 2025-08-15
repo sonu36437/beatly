@@ -1,22 +1,32 @@
 import TrackPlayer from "react-native-track-player";
 import { innertube } from "..";
-import { Alert } from "react-native";
+
 
 class Player{
   private queue=[];
   private currentIndex:number;
   public playingFromScreen:string;
-  
+  public currentSongId:string|undefined;
+  private suggestedSongQueue=[]
+
   constructor(){
     this.currentIndex=-1;
+    this.queue=[];
+    this.suggestedSongQueue=[];
     this.playingFromScreen="";
   }
-  public playSong(index:number,currentsongId?:string){
+  public playSong(index:number,songId:string,screen:string,currentScreenAllSongs:[]){
+    console.log("this is form playsong ",this.getItemFromParticularIndex(index));
 
-   this.currentIndex=index;
-   const song= this.queue[index];
-  
-   this.resetAndPlay(song)
+    this.currentSongId!==songId?this.resetTheQueue() : null;
+    this.playingFromScreen!==screen? this.resetTheQueue() : null;
+    this.currentSongId=songId;
+    this.currentIndex=index;
+  if(this.getQueueLength()==0 || this.getQueueLength()<index){
+    this.addToQueue(currentScreenAllSongs);
+}
+  this.resetAndPlay(songId);
+    console.log("currentIndex ",this.currentIndex, " index ",index );
 
   }
   public getItemFromParticularIndex(index:number){
@@ -31,7 +41,7 @@ class Player{
         return item.mimeType.includes("audio/webm")
 
      })
-    
+
    await TrackPlayer.reset()
      await TrackPlayer.add({
         id: song.id,
@@ -39,7 +49,7 @@ class Player{
         title: song.title,
         artist: song.artists,
         artwork: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork,
-       
+
     });
    await TrackPlayer.play()
    return;
@@ -51,17 +61,17 @@ class Player{
 
     this.queue.push(...slicedSong);
   }
-   
+
   public playNext(){
     console.log("called next");
     this.currentIndex=this.currentIndex+1;
     this.resetAndPlay(this.queue[this.currentIndex%this.queue.length])
   }
- 
+
   public playPrevious(){
     this.currentIndex=this.currentIndex-1;
     console.log("called previous");
-    
+
     this.resetAndPlay(this.queue[this.currentIndex%this.queue.length])
   }
   public getQueueLength(){

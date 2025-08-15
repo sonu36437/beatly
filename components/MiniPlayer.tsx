@@ -99,7 +99,7 @@ import {
                     {currentTrack?.title || 'Unknown Title'}
                   </Text>
                   <Text style={{color:'gray',fontFamily:'Rubik-Regular',fontSize:12}} numberOfLines={1}>
-                    {currentTrack?.artist || 'Unknown Artist'}
+                    {currentTrack?.artist || currentTrack?.artists || 'Unknown Artist'}
                   </Text>
                 </View>
   
@@ -144,8 +144,8 @@ import {
       alignSelf: 'center',
       justifyContent: 'center',
       borderRadius: 20,
-      zIndex: 1, // ✅ Keep it lower than popup
-      elevation: 1, // ✅ For Android layering
+      zIndex: 1,
+      elevation: 1, 
     },
     blurWrapper: {
       flex: 1,

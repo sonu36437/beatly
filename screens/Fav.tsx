@@ -7,14 +7,23 @@ import { player } from '../player/Player'
 
 export default function Fav() {
   const songs= useQuery(FavSong)
-  const realm= useRealm()
+  const realm= useRealm();
+
+
+  const handleSongItemClick = React.useCallback((index: number,item:any) => {
+    player.playSong(index,item,"fav",songs)
+  }, [songs]);
+
+
+
  const renderItem= ({item,index}:any)=>{
     return(
-        <SongItem song={item} index={index}totalsongs={songs}
-        playingFromScreen="fav"
-     
+             <SongItem song={item}
+                  clickedOne={()=>{
+                    handleSongItemClick(index,item);
+                  }}
         />
-   
+
     )
  }
  if(songs.length===0){
@@ -24,11 +33,11 @@ export default function Fav() {
         </View>
     )
  }
-  
+
   return (
     <>
     <View style={{flex:1,paddingHorizontal:10}}>
-  
+
        <FlatList
                    data={songs}
                    renderItem={renderItem}
@@ -37,22 +46,22 @@ export default function Fav() {
                    maxToRenderPerBatch={50}
                    contentContainerStyle={{paddingBottom: 200, paddingTop: 80}}
                    getItemLayout={(item,index)=>{
-                     return{     
-                       length:70,
-                       offset:70*index,
+                     return{
+                       length:100,
+                       offset:100*index,
                        index:index
                      }
                    }}
-                  
-                 
+
+
                    bounces={true}
                    bouncesZoom={true}
-                  
+
                  />
       </View>
 
-   
+
     </>
-   
+
   )
 }
