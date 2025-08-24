@@ -2,6 +2,7 @@ import TrackPlayer from "react-native-track-player";
 import { innertube } from "..";
 
 
+
 class Player{
   private queue=[];
   private currentIndex:number;
@@ -25,10 +26,23 @@ class Player{
   if(this.getQueueLength()==0 || this.getQueueLength()<index){
     this.addToQueue(currentScreenAllSongs);
 }
+
   this.resetAndPlay(songId);
     console.log("currentIndex ",this.currentIndex, " index ",index );
 
   }
+
+  public async playSingleAndGetSuggestions(song:any){
+      console.log(song)
+  // const videoId:string = song.id;
+  // const playlistId:string=song.playlistId;
+  // const suggestions=await innertube.fetchSimilarSongsOrPlaylist(videoId,playlistId);
+  // return suggestions;
+
+
+
+  }
+
   public getItemFromParticularIndex(index:number){
     return this.queue[index];
   }

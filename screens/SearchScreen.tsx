@@ -98,9 +98,11 @@ import {  useIsFocused } from '@react-navigation/native';
         setIsMore(false);
       }
     };
-      const handleSongItemClick = React.useCallback((index: number,item:any) => {
-          player.playSong(index,item,"search",result)
-      },[result]);
+      const handleSongItemClick = React.useCallback((item:any) => {
+          // player.playSong(index,item,"search",result)
+          // it will going to push suggested songs in suggestedQueue in player object
+          player.playSingleAndGetSuggestions(item);
+      },[]);
 
     const renderItem = ({item, index}: any) => {
       if (!item?.id || !item?.title) return null;
@@ -108,7 +110,7 @@ import {  useIsFocused } from '@react-navigation/native';
         <SongItem
           song={item}
           clickedOne={()=>{
-              handleSongItemClick(index,item);
+              handleSongItemClick(item);
           }}
 
         />
