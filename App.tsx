@@ -59,6 +59,8 @@ export default function App() {
     const listener= TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged,(event)=>{
       console.log(event.track);
       
+      console.log(event.track);
+      
       setTrack(event.track)
     })
     return ()=>{

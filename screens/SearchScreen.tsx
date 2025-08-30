@@ -65,7 +65,7 @@ import {  useIsFocused } from '@react-navigation/native';
 
         const result = await innertube.search(cleanedInput.toLowerCase() + " song ");
 
-        console.log("this is from fresult ",result);
+        console.log("this is from fresult ",result.results[0].thumbnails);
 
         const videoGreaterThanSeventySeconds=result.results.filter((item:any)=>{
          return item?.durationInSeconds>60

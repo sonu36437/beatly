@@ -1,13 +1,14 @@
 import React, {useEffect} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator} from 'react-native';
 import {BlurView} from '@react-native-community/blur';
 import Slider from '@react-native-community/slider';
-import TrackPlayer, {useProgress, Event} from 'react-native-track-player';
+import TrackPlayer, {useProgress, Event, usePlaybackState, State} from 'react-native-track-player';
 import {usePlayerStore} from '../store/PlayerStore';
 import {PauseButton, PlayButton} from './MiniPlayer';
 import {player} from '../player/Player';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Height, Width } from '../constants/ScreenProportion';
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
@@ -18,20 +19,32 @@ const formatTime = (seconds: number) => {
 export default function FullScreenPlayer({currentTrack}: any) {
  
   const progress = useProgress();
+  const isBuffering = usePlaybackState();
+
+
+
   const {togglePlayPause, isPlaying} = usePlayerStore();
+  
+  
   useEffect(() => {
     const listener = TrackPlayer.addEventListener(
       Event.PlaybackState,
+      
       async event => {
+        
         event.state === 'playing'
           ? togglePlayPause(true)
           : togglePlayPause(false);
       },
+    
     );
     return () => {
       listener.remove();
     };
   }, []);
+  
+
+
   return (
     <View style={StyleSheet.absoluteFill}>
       <BlurView
@@ -44,9 +57,10 @@ export default function FullScreenPlayer({currentTrack}: any) {
      
   
       <View style={styles.content}>
+      
         <Image source={{ uri: currentTrack?.artwork }} style={styles.img} />
         
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={styles.title} numberOfLines={3}>
           {currentTrack?.title}
         </Text>
   
@@ -72,31 +86,39 @@ export default function FullScreenPlayer({currentTrack}: any) {
         <View style={styles.controls}>
           <TouchableOpacity onPress={() => player.playPrevious()} style={styles.roundButton}>
             <View style={styles.prevTriangle} />
+                <View style={styles.prevTriangle} />
           </TouchableOpacity>
   
-          <TouchableOpacity
-            onPress={() => {
-              isPlaying ? TrackPlayer.pause() : TrackPlayer.play();
-            }}
-            style={[styles.roundButton, { backgroundColor: '#fff' }]}
-          >
-            {isPlaying ? <MaterialCommunityIcons name="pause" size={40} color="black" /> : <MaterialCommunityIcons name="play"size={40}  color="black"/>}
-          </TouchableOpacity>
+         <TouchableOpacity
+  onPress={() => {
+    isPlaying ? TrackPlayer.pause() : TrackPlayer.play();
+  }}
+  style={[styles.roundButton, { backgroundColor: 'rgba(255,255,255,0.1)' }]}
+>
+  {isBuffering.state === State.Buffering ? (
+    <ActivityIndicator color="white" size="large" />
+  ) : isPlaying ? (
+    <MaterialCommunityIcons name="pause" size={40} color="white" />
+  ) : (
+    <MaterialCommunityIcons name="play" size={40} color="white" />
+  )}
+</TouchableOpacity>
   
           <TouchableOpacity onPress={() => player.playNext()} style={styles.roundButton}>
             <View style={styles.nextTriangle} />
+             <View style={styles.nextTriangle} />
           </TouchableOpacity>
         </View>
   
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.actionButton}>
-            <Text style={styles.actionText}>Download</Text>
+      <MaterialCommunityIcons name="download" size={24} color="white"/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Text style={styles.actionText}>Favourite</Text>
+        <MaterialCommunityIcons name="heart" size={24} color="white"/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Text style={styles.actionText}> Repeat</Text>
+           <MaterialCommunityIcons name="repeat" size={24} color="white"/>
           </TouchableOpacity>
         </View>
       </View>
@@ -108,28 +130,28 @@ const styles = StyleSheet.create({
     content: {
       flex: 1,
       alignItems: 'center',
-      paddingTop: 60,
+      justifyContent: 'center',
+      backgroundColor: 'rgba(52, 2, 34, 0.4)', 
+      paddingTop:Height*0.01,
+      
     },
     img: {
-      height: 280,
-      width: 400,
+      height: 0.28*Height,
+      width: 0.98*Width,
       borderRadius: 20,
       marginBottom: 20,
-      shadowColor: '#000',
-      shadowOpacity: 0.25,
-      shadowRadius: 10,
-      shadowOffset: { width: 0, height: 5 },
+     
     },
     title: {
       color: 'white',
-      fontSize: 15,
+      fontSize: Dimensions.get("screen").fontScale*18,
       fontFamily: 'Rubik-Bold',
       textAlign: 'center',
       marginBottom: 20,
-      paddingHorizontal: 20,
+      paddingHorizontal: 10,
     },
     sliderWrapper: {
-      width: '90%',
+      width:Width*0.90,
       alignItems: 'center',
       marginBottom: 30,
     },
@@ -142,7 +164,7 @@ const styles = StyleSheet.create({
     timeText: {
       color: '#eee',
       fontSize: 14,
-      fontFamily: 'Rubik-Regular',
+      fontFamily: 'Rubik-Bold',
     },
     controls: {
       flexDirection: 'row',
@@ -152,6 +174,7 @@ const styles = StyleSheet.create({
       marginBottom: 40,
     },
     roundButton: {
+      flexDirection:'row',
       width: 60,
       height: 60,
       borderRadius: 30,
@@ -164,12 +187,10 @@ const styles = StyleSheet.create({
       shadowOffset: { width: 0, height: 3 },
     },
     prevTriangle: {
-      width: 0,
-      height: 0,
       borderRightWidth: 14,
       borderTopWidth: 10,
       borderBottomWidth: 10,
-      borderRightColor: '#fff',
+      borderRightColor: '#fefefeff',
       borderTopColor: 'transparent',
       borderBottomColor: 'transparent',
     },
@@ -185,13 +206,16 @@ const styles = StyleSheet.create({
     },
     actionButtons: {
       width: '100%',
-      paddingHorizontal: 10,
-      marginBottom:10,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+     position:'absolute',
+     flexDirection:'row',
+     justifyContent:'space-between',
+     alignItems:'center',
+     bottom:2
+      
     },
     actionButton: {
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: 'rgba(255,255,255,0.1)',
       paddingVertical: 12,
       paddingHorizontal: 20,
       borderRadius: 15,

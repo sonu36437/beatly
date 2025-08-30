@@ -15,6 +15,7 @@ import MiniPlayer from '../components/MiniPlayer';
 import Fav from '../screens/Fav';
 import Modal from '../components/Modal';
 import { useModalStore } from '../store/ModalStore';
+import TrackPlayer from 'react-native-track-player';
 
 const Tab = createBottomTabNavigator();
 
@@ -130,7 +131,7 @@ export default function MyTabs() {
     },
     headerBackground: () => (
       <BlurView
-        style={[StyleSheet.absoluteFill,{backgroundColor:'rgba(0, 0, 0, 0.1)'}]}
+        style={[StyleSheet.absoluteFill,{backgroundColor:'rgba(52, 2, 34, 0.4)'}]}
         blurType="dark"
         blurAmount={20}
         blurRadius={20}
@@ -147,7 +148,7 @@ export default function MyTabs() {
       </Tab.Navigator>
 
     
-      {currentTrack && <MiniPlayer />}
+      {TrackPlayer.getActiveTrack() !== null && <MiniPlayer />}
       <Modal children={content} visible={isModalOpen} animationType='slide' onRequestClose={closeModal}   transparent={true}/>
     </View>
   );
@@ -157,14 +158,14 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 0,
-   
     height: 70,
-    borderRadius: 30,
+   borderTopEndRadius:20,
+   borderTopStartRadius:20,
     overflow: 'hidden',
     
     width:"100%",
     alignSelf:'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(52, 2, 34, 0.4)',
  
   },
   tabContent: {

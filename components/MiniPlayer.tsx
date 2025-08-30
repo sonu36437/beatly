@@ -146,6 +146,7 @@ import {
       borderRadius: 20,
       zIndex: 1,
       elevation: 1, 
+      backgroundColor:"rgba(52, 2, 34, 0.4)"
     },
     blurWrapper: {
       flex: 1,

@@ -8,7 +8,7 @@ class Player{
   private currentIndex:number;
   public playingFromScreen:string;
   public currentSongId:string|undefined;
-  private suggestedSongQueue=[]
+  private suggestedSongQueue:any=[]
 
   constructor(){
     this.currentIndex=-1;
@@ -22,6 +22,8 @@ class Player{
     this.currentSongId!==songId?this.resetTheQueue() : null;
     this.playingFromScreen!==screen? this.resetTheQueue() : null;
     this.currentSongId=songId;
+    this.suggestedSongQueue=[];
+    this.playingFromScreen=screen;
     this.currentIndex=index;
   if(this.getQueueLength()==0 || this.getQueueLength()<index){
     this.addToQueue(currentScreenAllSongs);
@@ -33,13 +35,32 @@ class Player{
   }
 
   public async playSingleAndGetSuggestions(song:any){
-      console.log(song)
-  // const videoId:string = song.id;
-  // const playlistId:string=song.playlistId;
-  // const suggestions=await innertube.fetchSimilarSongsOrPlaylist(videoId,playlistId);
-  // return suggestions;
+    this.resetAndPlay(song);
+  const videoId:string = song.id;
+  const playlistId:string=song.playlistId;
+  const suggestions=await innertube.fetchSimilarSongsOrPlaylist(videoId,playlistId);
+
+  this.currentIndex=0;
+  this.suggestedSongQueue=suggestions;
+
+  return;
 
 
+
+
+
+
+
+  }
+   private formatThumnail(song:any){
+
+   if(song.thumbnails){
+    return song.thumbnails[song.thumbnails.length-1].url;
+   }
+   if(song.thumbnail){
+    return song.thumbnail[song.thumbnail.length-1].url;
+   }
+   return song.artwork;
 
   }
 
@@ -62,7 +83,9 @@ class Player{
         url: audioOnlyLink[audioOnlyLink.length-1].url,
         title: song.title,
         artist: song.artists,
-        artwork: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork,
+        // artwork: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork,
+        artwork:this.formatThumnail(song)
+
 
     });
    await TrackPlayer.play()
@@ -78,11 +101,21 @@ class Player{
 
   public playNext(){
     console.log("called next");
+    if(this.suggestedSongQueue.length>0){
+     this.currentIndex++;
+      this.resetAndPlay(this.suggestedSongQueue[this.currentIndex%this.suggestedSongQueue.length])
+      return;
+    }
     this.currentIndex=this.currentIndex+1;
     this.resetAndPlay(this.queue[this.currentIndex%this.queue.length])
   }
 
   public playPrevious(){
+       if(this.suggestedSongQueue.length>0){
+     this.currentIndex--;
+      this.resetAndPlay(this.suggestedSongQueue[this.currentIndex%this.suggestedSongQueue.length])
+      return;
+    }
     this.currentIndex=this.currentIndex-1;
     console.log("called previous");
 

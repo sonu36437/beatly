@@ -1,0 +1,64 @@
+// services/FavoritesService.ts
+import { Realm } from '@realm/react';
+import FavSong from '../databases/FavSongDb';
+import { Alert, ToastAndroid } from 'react-native';
+
+
+export const addToFavorites = (realm: Realm, track: {
+  id: string;
+  title: string;
+  artists: string;
+  thumbnail: string;
+}) => {
+  try {
+    realm.write(() => {
+      realm.create(
+        'FavSong',
+        FavSong.generate(track.id, track.title, track.artists, track.thumbnail),
+        Realm.UpdateMode.Modified 
+      );
+    });
+    ToastAndroid.show('Added to favorites', ToastAndroid.SHORT);
+    return true;
+  } catch (e) {
+    console.error("Error adding to favorites:", e);
+    return false;
+  }
+};
+
+
+export const removeFromFavorites = (realm: Realm, trackId: string) => {
+  try {
+    realm.write(() => {
+      const song = realm.objectForPrimaryKey('FavSong', trackId);
+      if (song) {
+        realm.delete(song);
+      }
+    });
+    ToastAndroid.show('removed from favorites', ToastAndroid.SHORT);
+    return true;
+  } catch (e) {
+    console.error("Error removing from favorites:", e);
+    return false;
+  }
+};
+
+
+export const isFavorite = (realm: Realm, trackId: string): boolean => {
+  try {
+    return realm.objectForPrimaryKey('FavSong', trackId) !== null;
+  } catch (e) {
+    console.error("Error checking favorites:", e);
+    return false;
+  }
+};
+
+
+export const getAllFavorites = (realm: Realm) => {
+  try {
+    return realm.objects('FavSong');
+  } catch (e) {
+    console.error("Error fetching favorites:", e);
+    return [];
+  }
+};

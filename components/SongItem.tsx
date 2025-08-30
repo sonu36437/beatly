@@ -16,7 +16,7 @@ const {openModal} = useModalStore();
 
       <View style={styles.container}>
         <Image
-          source={{uri: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork}}
+          source={{uri: song?.thumbnails?song?.thumbnails[song.thumbnails.length-1]?.url:song?.artwork}}
           style={styles.artwork}
           resizeMode="cover"
         />
