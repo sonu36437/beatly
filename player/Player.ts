@@ -71,16 +71,19 @@ class Player{
     this.queue=[]
   }
   public async resetAndPlay(song:any){
-    const response = await innertube.player(song.id);
-    const audioOnlyLink=response.filter((item:any)=>{
+    const response = !song?.url?await innertube.player(song.id):song?.url;
+    let audioOnlyLink;
+    
+    if(!song?.url){
+      audioOnlyLink=response.filter((item:any)=>{
         return item.mimeType.includes("audio/webm")
 
      })
-
+    }
    await TrackPlayer.reset()
      await TrackPlayer.add({
         id: song.id,
-        url: audioOnlyLink[audioOnlyLink.length-1].url,
+        url: song.url?song.url:audioOnlyLink[audioOnlyLink.length-1]?.url,
         title: song.title,
         artist: song.artists,
         // artwork: song?.thumbnails?song?.thumbnails[0]?.url:song?.artwork,

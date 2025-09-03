@@ -1,47 +1,77 @@
-import React, {useMemo} from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-
-const CountItem = React.memo(({ item }: { item: any }) => {
-  return (
-    <View
-      style={{
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#ccc',
-      }}
-    >
-      <Text style={{ fontSize: 16 }}>{item}</Text>
-    </View>
-  );
-});
+import { View, Text, StyleSheet,FlatList  } from 'react-native'
+import React, { useCallback } from 'react'
+import { useQuery } from '@realm/react'
+import DownloadDB from '../databases/DownloadDb';
+import SongItem from '../components/SongItem';
+import { player } from '../player/Player';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
 export default function Downloads() {
-  const renderItem = ({item,index}:{item:any,index:number}) => {
+  const songs= useQuery(DownloadDB);
+  console.log(songs);
+  const handleSongItemClick = React.useCallback((index: number,item:any) => {
+    player.playSong(index,item,"downloads",songs)
+  }, [songs]);
+  const renderItem=useCallback(({item,index}:{item:any,index:number})=>{
     return(
-      <CountItem item={item}/>
+     <SongItem song={item}
+                       clickedOne={()=>{
+                         handleSongItemClick(index,item);
+                       }}
+             />
+     
     )
-  }
 
-  const numbers = React.useMemo(() => Array.from({ length: 10000 }, (_, i) => i + 1), []);
-  return (
-    <View style={{flex:1, backgroundColor:"red"}}>
-      <FlatList data={numbers} renderItem={renderItem}
-                initialNumToRender={30}
-                maxToRenderPerBatch={10}
-                getItemLayout={(numbers, index) => ({
-                  length: 50,              // row height
-                  offset: 50 * index,      // position from top
-                  index,                   // row index
-                })}
+  },[songs])
+   if(songs.length===0){
+      return(
+          <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
+              <Text style={{color:'white',fontFamily:'Rubik-Bold'}}>No songs found</Text>
+          </View>
+      )
+   }
+  
+  
+return (
+    <SafeAreaView style={{flex:1,paddingHorizontal:10,backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
+      <Text style={{fontFamily:'Rubik-Bold',fontSize:20,color:'white',paddingHorizontal:10}}>Downloads</Text>
+      
+    <View >
+       <FlatList
+                   data={songs}
+                   renderItem={renderItem}
+                   keyExtractor={(item,index)=> item.id+index}
+                  initialNumToRender={30}
+              maxToRenderPerBatch={5}
+                   windowSize={10}
+                   removeClippedSubviews={true}
+                   onEndReachedThreshold={0.8}
+                   contentContainerStyle={{paddingBottom: 200, paddingTop: 20}}
+                   
+                   getItemLayout={(item,index)=>{
+                     return{
+                       length:94,
+                       offset:94*index,
+                       index:index
+                     }
+                   }}
+                   bounces={true}
+                   bouncesZoom={true}
 
-      />
+                 />
+      </View>
+ 
 
-    </View>
+   </SafeAreaView>
+
   )
-
-
 }
+const styles= StyleSheet.create({
+  container:{
+    flex:1,
+    paddingTop:30,
+
+  }
+})

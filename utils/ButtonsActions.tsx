@@ -1,7 +1,9 @@
 // services/FavoritesService.ts
 import { Realm } from '@realm/react';
 import FavSong from '../databases/FavSongDb';
+import DownloadDB from '../databases/DownloadDb';
 import { Alert, ToastAndroid } from 'react-native';
+
 
 
 export const addToFavorites = (realm: Realm, track: {
@@ -25,6 +27,26 @@ export const addToFavorites = (realm: Realm, track: {
     return false;
   }
 };
+export const pushToDownloads=(realm: Realm,track:any)=>{
+  if(!track.artist){
+    track.artist="unknown";
+
+  }
+  try{
+    realm.write(()=>{
+      realm.create(
+        'DownloadDB',
+        DownloadDB.generate(track.id,track.title,track.artist,track.thumbnail,track.url),
+        Realm.UpdateMode.Modified 
+
+      )
+    })
+  }
+  catch (e) {
+    console.error("Error pushing db:", e);
+  
+  }
+}
 
 
 export const removeFromFavorites = (realm: Realm, trackId: string) => {

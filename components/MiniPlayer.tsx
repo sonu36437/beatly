@@ -82,7 +82,7 @@ import {
                 blurRadius={20}
                 blurAmount={4}
                 overlayColor=""
-                reducedTransparencyFallbackColor="white"
+              
               />
      
               <View style={styles.content}>

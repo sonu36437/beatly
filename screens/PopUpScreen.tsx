@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, StatusBar } from 'react-native';
 import React, { useMemo, useState, useEffect } from 'react';
 import { BlurView } from '@react-native-community/blur';
 import { useRealm } from '@realm/react';
@@ -8,7 +8,12 @@ import {
   addToFavorites,
   removeFromFavorites,
   isFavorite,
+  pushToDownloads,
 } from "../utils/ButtonsActions"
+import { wrapMigration } from 'realm';
+import Download from '../utils/Download';
+import { downloadFile } from 'react-native-fs';
+import { deleteAllDownloads, downloadSong } from '../utils/ChunksDownload';
 
 function PopUpScreen({ track }: any) {
   const realm = useRealm();
@@ -50,7 +55,16 @@ function PopUpScreen({ track }: any) {
     }
    
   };
+ const handleDownload=async ()=>{
+  closeModal();
+  console.log("form handleDownload button ",track)
+const res= await  downloadSong({song:track});
 
+ if (res){
+    pushToDownloads(realm,res); 
+ }
+  
+ }
   useEffect(() => {
     if (isClosing) {
       closeModal();
@@ -62,7 +76,10 @@ function PopUpScreen({ track }: any) {
   }
 
   return (
+    
     <View style={styles.container}>
+      <StatusBar hidden={true}/>
+
    
       <TouchableOpacity
         style={styles.exit}
@@ -135,11 +152,17 @@ function PopUpScreen({ track }: any) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={()=>{
+             handleDownload(track)
+          }}>
             <Text style={styles.buttonText}>Download</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} 
+          onPress={()=>{
+            deleteAllDownloads(realm);
+          }}
+          >
             <Text style={styles.buttonText}>Play Next</Text>
           </TouchableOpacity>
         </View>
@@ -152,8 +175,9 @@ export default PopUpScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'transparent',
+   width: "100%",
+   height: "100%"
+    
   },
   exit: {
     height: '50%',

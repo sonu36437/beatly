@@ -18,6 +18,7 @@ const ITEM_HEIGHT = 94;
 import { player } from '../player/Player';
 
 import {  useIsFocused } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -63,9 +64,9 @@ import {  useIsFocused } from '@react-navigation/native';
         .trim();
         console.log("searching things ", cleanedInput);
 
-        const result = await innertube.search(cleanedInput.toLowerCase() + " song ");
+        const result = await innertube.search(cleanedInput.toLowerCase() + "song ");
 
-        console.log("this is from fresult ",result.results[0].thumbnails);
+        // console.log("this is from fresult ",result.results[0].thumbnails);
 
         const videoGreaterThanSeventySeconds=result.results.filter((item:any)=>{
          return item?.durationInSeconds>60
@@ -93,7 +94,7 @@ import {  useIsFocused } from '@react-navigation/native';
         setResult((prev:any)=> [...prev, ...videoGreaterThanSeventySeconds]);
         setPaginationToken(response.continuationToken);
       } catch (e) {
-        Alert.alert('some issue occurred');
+         return
       } finally {
         setIsMore(false);
       }
@@ -118,6 +119,8 @@ import {  useIsFocused } from '@react-navigation/native';
     };
 
     return (
+      <SafeAreaView style={{flex:1,  backgroundColor: 'rgba(53, 1, 27, 0.8)',}}>
+    
       <View style={styles.container}>
         <Text style={styles.title}>Search for songs</Text>
         <TextInput
@@ -165,17 +168,21 @@ import {  useIsFocused } from '@react-navigation/native';
 
           /> */}
       </View>
+      </SafeAreaView>
+    
     );
   }
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: 'black',
+      flex:1,
+      
+      
+    
       paddingHorizontal: 10,
     },
     title: {
-      color: '#DB7093',
+      color: '#ffffffff',
       fontSize: 25,
       fontFamily:'Rubik-Bold',
       textAlign: 'center',

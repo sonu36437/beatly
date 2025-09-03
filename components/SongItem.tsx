@@ -4,6 +4,17 @@ import { player } from '../player/Player';
 import { useNavigation ,useRoute} from '@react-navigation/native';
 import { useModalStore } from '../store/ModalStore';
 import PopUpScreen from '../screens/PopUpScreen';
+function formatThumnail(song:any){
+
+   if(song.thumbnails){
+    return song.thumbnails[song.thumbnails.length-1].url;
+   }
+   if(song.thumbnail){
+    return song.thumbnail[song.thumbnail.length-1].url;
+   }
+   return song.artwork;
+
+  }
 
  function SongItem({song,clickedOne}:{song:any,clickedOne?:()=>void}) {
 
@@ -16,7 +27,8 @@ const {openModal} = useModalStore();
 
       <View style={styles.container}>
         <Image
-          source={{uri: song?.thumbnails?song?.thumbnails[song.thumbnails.length-1]?.url:song?.artwork}}
+          // source={{uri: song?.thumbnails?song?.thumbnails[song.thumbnails.length-1]?.url:song?.artwork}}
+          source={{uri: formatThumnail(song)}}
           style={styles.artwork}
           resizeMode="cover"
         />
@@ -41,7 +53,7 @@ const {openModal} = useModalStore();
     </TouchableOpacity>
   );
 }
-export default React.memo(SongItem);
+  export default React.memo(SongItem);
 
 const styles = StyleSheet.create({
   container: {
@@ -52,6 +64,7 @@ const styles = StyleSheet.create({
     padding: 2,
     borderRadius: 12,
     marginBottom: 20,
+    backgroundColor:'rbga(89,255,255,0.8)'
 
   },
   artwork: {

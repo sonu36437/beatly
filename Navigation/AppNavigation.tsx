@@ -16,6 +16,7 @@ import Fav from '../screens/Fav';
 import Modal from '../components/Modal';
 import { useModalStore } from '../store/ModalStore';
 import TrackPlayer from 'react-native-track-player';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +25,7 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
   const { buildHref } = useLinkBuilder();
 
   return (
+    <SafeAreaView >
     <View style={styles.container}>
       <BlurView
         style={StyleSheet.absoluteFill}
@@ -92,7 +94,7 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
                 size={24}
                 color={isFocused ? 'white' : 'gray'}
               />
-              <Text style={{ color: isFocused ? 'white' : 'gray', fontSize: 12 }}>
+              <Text style={{ color: isFocused ? 'white' : 'gray', fontSize: 12,fontFamily:"Rubik-Bold" }}>
                 {label}
               </Text>
             </TouchableOpacity>
@@ -100,6 +102,7 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
         })}
       </View>
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -117,13 +120,16 @@ export default function MyTabs() {
       >
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="search" component={SearchScreen} />
-        <Tab.Screen
-  name="Fav"
+        
+        <Tab.Screen name="Fav"
   component={Fav}
   options={{
     headerShown: true,
-    headerTransparent: true,             // allow content to go under the header
-    headerStatusBarHeight: 0,            // remove extra status bar space
+    headerTransparent:true,
+    
+
+   
+    
     headerTitle: 'Favourite songs',
     headerTitleStyle: {
       color: 'white',
@@ -149,7 +155,7 @@ export default function MyTabs() {
 
     
       {TrackPlayer.getActiveTrack() !== null && <MiniPlayer />}
-      <Modal children={content} visible={isModalOpen} animationType='slide' onRequestClose={closeModal}   transparent={true}/>
+      <Modal children={content} visible={isModalOpen} animationType='slide' onRequestClose={closeModal}   transparent={true} statusBarTranslucent={true}/>
     </View>
   );
 }

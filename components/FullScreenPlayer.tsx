@@ -1,49 +1,53 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator} from 'react-native';
 import {BlurView} from '@react-native-community/blur';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {useProgress, Event, usePlaybackState, State} from 'react-native-track-player';
 import {usePlayerStore} from '../store/PlayerStore';
-import {PauseButton, PlayButton} from './MiniPlayer';
 import {player} from '../player/Player';
-import SystemNavigationBar from 'react-native-system-navigation-bar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Height, Width } from '../constants/ScreenProportion';
+
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${mins}:${secs < 10 ? '0' + secs : secs}`;
-  
 };
 
 export default function FullScreenPlayer({currentTrack}: any) {
- 
   const progress = useProgress();
-  const isBuffering = usePlaybackState();
-
-
-
-  const {togglePlayPause, isPlaying} = usePlayerStore();
+  const playbackState = usePlaybackState();
+  const {isPlaying, togglePlayPause} = usePlayerStore();
   
-  
+
+  const handlePlayPause = useCallback(async () => {
+    try {
+      if (playbackState.state === State.Playing) {
+        await TrackPlayer.pause();
+      } else {
+        await TrackPlayer.play();
+      }
+
+      togglePlayPause(playbackState.state !== State.Playing);
+    } catch (error) {
+      console.error('Play/Pause error:', error);
+    }
+  }, [playbackState.state, togglePlayPause]);
+
+
   useEffect(() => {
-    const listener = TrackPlayer.addEventListener(
+    const subscription = TrackPlayer.addEventListener(
       Event.PlaybackState,
-      
-      async event => {
-        
-        event.state === 'playing'
-          ? togglePlayPause(true)
-          : togglePlayPause(false);
-      },
-    
-    );
-    return () => {
-      listener.remove();
-    };
-  }, []);
+      async (event) => {
   
-
+        if ((event.state === State.Playing) !== isPlaying) {
+          togglePlayPause(event.state === State.Playing);
+        }
+      }
+    );
+    
+    return () => subscription.remove();
+  }, [isPlaying, togglePlayPause]);
 
   return (
     <View style={StyleSheet.absoluteFill}>
@@ -55,9 +59,7 @@ export default function FullScreenPlayer({currentTrack}: any) {
         overlayColor=""
       />
      
-  
       <View style={styles.content}>
-      
         <Image source={{ uri: currentTrack?.artwork }} style={styles.img} />
         
         <Text style={styles.title} numberOfLines={3}>
@@ -84,48 +86,51 @@ export default function FullScreenPlayer({currentTrack}: any) {
         </View>
   
         <View style={styles.controls}>
-          <TouchableOpacity onPress={() => player.playPrevious()} style={styles.roundButton}>
-            <View style={styles.prevTriangle} />
-                <View style={styles.prevTriangle} />
+          <TouchableOpacity 
+            onPress={() => player.playPrevious()} 
+            style={styles.roundButton}
+          >
+            <MaterialCommunityIcons name="skip-previous" size={40} color="white" />
           </TouchableOpacity>
   
-         <TouchableOpacity
-  onPress={() => {
-    isPlaying ? TrackPlayer.pause() : TrackPlayer.play();
-  }}
-  style={[styles.roundButton, { backgroundColor: 'rgba(255,255,255,0.1)' }]}
->
-  {isBuffering.state === State.Buffering ? (
-    <ActivityIndicator color="white" size="large" />
-  ) : isPlaying ? (
-    <MaterialCommunityIcons name="pause" size={40} color="white" />
-  ) : (
-    <MaterialCommunityIcons name="play" size={40} color="white" />
-  )}
-</TouchableOpacity>
+          <TouchableOpacity
+            onPress={handlePlayPause}
+            style={[styles.roundButton, { backgroundColor: 'rgba(255,255,255,0.1)' }]}
+          >
+            {playbackState.state === State.Buffering ? (
+              <ActivityIndicator color="white" size="large" />
+            ) : playbackState.state === State.Playing ? (
+              <MaterialCommunityIcons name="pause" size={40} color="white" />
+            ) : (
+              <MaterialCommunityIcons name="play" size={40} color="white" />
+            )}
+          </TouchableOpacity>
   
-          <TouchableOpacity onPress={() => player.playNext()} style={styles.roundButton}>
-            <View style={styles.nextTriangle} />
-             <View style={styles.nextTriangle} />
+          <TouchableOpacity 
+            onPress={() => player.playNext()} 
+            style={styles.roundButton}
+          >
+            <MaterialCommunityIcons name="skip-next" size={40} color="white" />
           </TouchableOpacity>
         </View>
   
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.actionButton}>
-      <MaterialCommunityIcons name="download" size={24} color="white"/>
+            <MaterialCommunityIcons name="download" size={24} color="white"/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-        <MaterialCommunityIcons name="heart" size={24} color="white"/>
+            <MaterialCommunityIcons name="heart" size={24} color="white"/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-           <MaterialCommunityIcons name="repeat" size={24} color="white"/>
+            <MaterialCommunityIcons name="repeat" size={24} color="white"/>
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
-  
 }
+
+
 const styles = StyleSheet.create({
     content: {
       flex: 1,

@@ -17,6 +17,9 @@ import MyTabs from './Navigation/AppNavigation'
 import PopUpScreen from './screens/PopUpScreen'
 import { RealmProvider } from '@realm/react'
 import FavSong from './databases/FavSongDb'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import UserInfoGatherScreen from './screens/UserInfoGatherScreen'
+import DownloadDB from './databases/DownloadDb'
 
 
 
@@ -24,7 +27,7 @@ export default function App() {
   const {setTrack,currentTrack} =usePlayerStore();
 
   useEffect(()=>{
-    SystemNavigationBar.setNavigationColor('black');
+  
     
     async function setupPlayer(){
     try{
@@ -47,7 +50,8 @@ export default function App() {
      })
 
     }catch(e){
-      Alert.alert("error while setting up the player")
+      console.log("some error occoured");
+      
     }
     
   }
@@ -70,16 +74,27 @@ export default function App() {
   },[])
   return (
     <>
-    <RealmProvider schema={[FavSong]} schemaVersion={5}>
-<StatusBar backgroundColor='black'/>
- {/* <SearchScreen/> */}
+    <StatusBar hidden={false}/>
+
+ 
+    <RealmProvider schema={[FavSong,DownloadDB]} schemaVersion={6}>
+
+
  <NavigationContainer theme={DarkTheme}>
  <Stack.Navigator screenOptions={{headerShown:false}}>
-<Stack.Screen name="nav" component={MyTabs}/>
+   
+
+<Stack.Screen name="nav" component={MyTabs} options={{
+  contentStyle:{backgroundColor:'black'}
+}} />
+
+
+
 
  </Stack.Navigator>
  </NavigationContainer>
  </RealmProvider>
+
 
 
 
