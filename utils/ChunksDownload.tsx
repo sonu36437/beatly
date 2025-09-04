@@ -25,11 +25,25 @@ function formatThumnail(song: any) {
 
 
 
-export const deleteAllDownloads = async (realm:Realm) => {
-    return;
-     const dirPath = RNFS.DocumentDirectoryPath;
-    await RNFS.unlink(dirPath);
-       await RNFS.mkdir(dirPath);
+export const deleteParticularSong = async (realm:Realm,song:any) => {
+  
+ const songPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp3`;
+const thumbnailPath = `${RNFS.DocumentDirectoryPath}/${song.id}.jpg}`
+ const isDownloaded = await RNFS.exists(songPath);
+ const isThumbnailDownloaded = await RNFS.exists(thumbnailPath);
+ if(isDownloaded && isThumbnailDownloaded){
+    realm.beginTransaction();
+    realm.delete(song);
+    realm.commitTransaction();
+    await RNFS.unlink(songPath);
+    await RNFS.unlink(thumbnailPath);
+
+    
+ }
+
+
+
+  
 
 };
 
@@ -75,13 +89,15 @@ async function downloadChunks({ url, totalFileSize, tempDowloadLocation, ranges,
 
 }
 
-async function songCompleteWalaNotification(song: any) {
+async function songCompleteWalaNotification(song: any,channelId:any) {
+    console.log("download complete notification");
+    
     await notifee.displayNotification({
         id: song.id,
         title: 'Download Complete',
         body: `Successfully downloaded ${song.title}`,
         android: {
-            channelId: 'downloads',
+            channelId: channelId,
             smallIcon: 'ic_launcher',
             largeIcon: formatThumnail(song),
         },
@@ -163,7 +179,7 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
                     onlyAlertOnce: true,
                     progress: {
                         max: 100,
-                        current: progress
+                       current:progress
                     },
                 
                 }
@@ -206,7 +222,7 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
 
     }
     console.log("delete temp file")
-    await songCompleteWalaNotification(song);
+    await songCompleteWalaNotification(song,channelId);
     return songMetaData
 
 

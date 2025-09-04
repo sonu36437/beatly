@@ -16,7 +16,9 @@ import Fav from '../screens/Fav';
 import Modal from '../components/Modal';
 import { useModalStore } from '../store/ModalStore';
 import TrackPlayer from 'react-native-track-player';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView ,useSafeAreaInsets} from 'react-native-safe-area-context';
+import { Height } from '../constants/ScreenProportion';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -24,9 +26,10 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
   const { colors } = useTheme();
   const { buildHref } = useLinkBuilder();
 
+
   return (
-    <SafeAreaView >
-    <View style={styles.container}>
+
+  <View style={styles.container}>
       <BlurView
         style={StyleSheet.absoluteFill}
         blurType="dark"
@@ -102,15 +105,18 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
         })}
       </View>
     </View>
-    </SafeAreaView>
+ 
+   
   );
 }
 
 export default function MyTabs() {
   const{currentTrack}= usePlayerStore();
   const {isModalOpen,content ,closeModal}=useModalStore();
+      const insets = useSafeAreaInsets();
   return (
-    <View style={{ flex: 1 }}>
+  
+    <View style={[ { paddingBottom: insets.bottom,flex:1,backgroundColor:'rgba(52, 2, 34, 0.4)' }]}>
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -157,6 +163,8 @@ export default function MyTabs() {
       {TrackPlayer.getActiveTrack() !== null && <MiniPlayer />}
       <Modal children={content} visible={isModalOpen} animationType='slide' onRequestClose={closeModal}   transparent={true} statusBarTranslucent={true}/>
     </View>
+
+  
   );
 }
 

@@ -14,6 +14,7 @@ import {
   import TrackPlayer, { Event } from 'react-native-track-player';
   import FullScreenPlayer from './FullScreenPlayer';
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
   
  export function PlayButton({size=30}:{size:number}) {
 
@@ -38,6 +39,7 @@ import {
   export default function MiniPlayer({ song }: any) {
     const { isPlaying, currentTrack, setTrack, togglePlayPause } = usePlayerStore();
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const inset= useSafeAreaInsets();
   
     // useEffect(() => {
     //   const listener = TrackPlayer.addEventListener(
@@ -72,7 +74,7 @@ import {
          setIsFullScreen(!isFullScreen)
             
          }}
-          style={styles.container}
+          style={[styles.container,{bottom:72+inset.bottom}]}
         >
         
             <View style={styles.blurWrapper}>
@@ -138,7 +140,7 @@ import {
   const styles = StyleSheet.create({
     container: {
       position: 'absolute',
-      bottom: 72,
+   
       width: '100%',
       height: 90,
       alignSelf: 'center',

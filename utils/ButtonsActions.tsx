@@ -74,6 +74,14 @@ export const isFavorite = (realm: Realm, trackId: string): boolean => {
     return false;
   }
 };
+export const isSongDownloaded=(realm:Realm,trackId:string):boolean=>{
+  try{
+    return realm.objectForPrimaryKey('DownloadDB',trackId) !== null;
+  }catch(e){
+    console.log(e);
+  }
+  return false;
+}
 
 
 export const getAllFavorites = (realm: Realm) => {

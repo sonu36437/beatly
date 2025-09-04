@@ -1,17 +1,17 @@
 import { View, Text, Alert, StatusBar } from 'react-native'
 import React, { useEffect } from 'react'
 import SearchScreen from './screens/SearchScreen'
-import TrackPlayer, { AppKilledPlaybackBehavior, Capability,Event } from 'react-native-track-player'
+import TrackPlayer, { AppKilledPlaybackBehavior, Capability, Event } from 'react-native-track-player'
 import MiniPlayer from './components/MiniPlayer'
 import FullScreenPlayer from './components/FullScreenPlayer'
 import { usePlayerStore } from './store/PlayerStore'
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { DarkTheme, NavigationContainer } from '@react-navigation/native'
- import { createNativeStackNavigator } from '@react-navigation/native-stack'
- 
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 
-const Stack= createNativeStackNavigator();
+
+const Stack = createNativeStackNavigator();
 
 import MyTabs from './Navigation/AppNavigation'
 import PopUpScreen from './screens/PopUpScreen'
@@ -24,82 +24,86 @@ import DownloadDB from './databases/DownloadDb'
 
 
 export default function App() {
-  const {setTrack,currentTrack} =usePlayerStore();
+  const { setTrack, currentTrack } = usePlayerStore();
 
-  useEffect(()=>{
-  
-    
-    async function setupPlayer(){
-    try{
-     await TrackPlayer.setupPlayer();
-     console.log("setup up is done successfully")
-     await TrackPlayer.updateOptions({
-      android:{
-        appKilledPlaybackBehavior:AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+  useEffect(() => {
 
-      },
-      capabilities:[
-        Capability.Play,
-        Capability.Pause,
-        Capability.SkipToNext,
-        Capability.SkipToPrevious,
-        Capability.SeekTo,
-        
-        
-      ]
-     })
 
-    }catch(e){
-      console.log("some error occoured");
-      
+    async function setupPlayer() {
+      try {
+        await TrackPlayer.setupPlayer();
+        console.log("setup up is done successfully")
+        await TrackPlayer.updateOptions({
+          android: {
+            appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+
+          },
+          capabilities: [
+            Capability.Play,
+            Capability.Pause,
+            Capability.SkipToNext,
+            Capability.SkipToPrevious,
+            Capability.SeekTo,
+
+
+          ]
+        })
+
+      } catch (e) {
+        console.log("some error occoured");
+
+      }
+
     }
-    
-  }
-  setupPlayer();
+    setupPlayer();
 
-  },[])
-  useEffect(()=>{
-   
-    const listener= TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged,(event)=>{
+  }, [])
+  useEffect(() => {
+
+    const listener = TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged, (event) => {
       console.log(event.track);
-      
+
       console.log(event.track);
-      
+
       setTrack(event.track)
     })
-    return ()=>{
+    return () => {
       listener.remove();
     }
-   
-  },[])
+
+  }, [])
   return (
     <>
-    <StatusBar hidden={false}/>
-
- 
-    <RealmProvider schema={[FavSong,DownloadDB]} schemaVersion={6}>
-
-
- <NavigationContainer theme={DarkTheme}>
- <Stack.Navigator screenOptions={{headerShown:false}}>
-   
-
-<Stack.Screen name="nav" component={MyTabs} options={{
-  contentStyle:{backgroundColor:'black'}
-}} />
 
 
 
 
- </Stack.Navigator>
- </NavigationContainer>
- </RealmProvider>
+      <RealmProvider schema={[FavSong, DownloadDB]} schemaVersion={6}>
+
+
+
+        <NavigationContainer theme={DarkTheme}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+
+            <Stack.Screen name="nav" component={MyTabs} options={{
+              contentStyle: { backgroundColor: 'black' }
+            }} />
+
+
+
+
+          </Stack.Navigator>
+        </NavigationContainer>
+
+      </RealmProvider>
 
 
 
 
 
 
- </>
+
+    </>
   )
 }

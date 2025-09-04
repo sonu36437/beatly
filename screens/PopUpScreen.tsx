@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, StatusBar, ToastAndroid } from 'react-native';
 import React, { useMemo, useState, useEffect } from 'react';
 import { BlurView } from '@react-native-community/blur';
 import { useRealm } from '@realm/react';
@@ -9,11 +9,12 @@ import {
   removeFromFavorites,
   isFavorite,
   pushToDownloads,
+  isSongDownloaded,
 } from "../utils/ButtonsActions"
 import { wrapMigration } from 'realm';
 import Download from '../utils/Download';
 import { downloadFile } from 'react-native-fs';
-import { deleteAllDownloads, downloadSong } from '../utils/ChunksDownload';
+import { deleteParticularSong, downloadSong } from '../utils/ChunksDownload';
 
 function PopUpScreen({ track }: any) {
   const realm = useRealm();
@@ -38,6 +39,10 @@ function PopUpScreen({ track }: any) {
     return isFavorite(realm, trackData.id);
   }, [trackData?.id, realm]);
 
+  const isInDownload = useMemo(() => {
+    return isSongDownloaded(realm, trackData?.id)
+
+  }, [trackData?.id, realm])
 
   const handleFavToggle = () => {
     if (!trackData) return;
@@ -46,25 +51,27 @@ function PopUpScreen({ track }: any) {
       setTimeout(() => {
         closeModal();
 
-        
+
       }, 100);
-      
+
     } else {
       addToFavorites(realm, trackData);
-       closeModal();
+      closeModal();
     }
-   
-  };
- const handleDownload=async ()=>{
-  closeModal();
-  console.log("form handleDownload button ",track)
-const res= await  downloadSong({song:track});
 
- if (res){
-    pushToDownloads(realm,res); 
- }
-  
- }
+  };
+  const handleDownload = async () => {
+    closeModal();
+    console.log("form handleDownload button ", track)
+    if(isInDownload){
+        deleteParticularSong(realm,track);
+    }
+    const res = await downloadSong({ song: track });
+    if (res) {
+      pushToDownloads(realm, res);
+    }
+
+  }
   useEffect(() => {
     if (isClosing) {
       closeModal();
@@ -76,11 +83,11 @@ const res= await  downloadSong({song:track});
   }
 
   return (
-    
-    <View style={styles.container}>
-      <StatusBar hidden={true}/>
 
-   
+    <View style={styles.container}>
+      <StatusBar hidden={true} />
+
+
       <TouchableOpacity
         style={styles.exit}
         onPress={() => {
@@ -88,7 +95,7 @@ const res= await  downloadSong({song:track});
         }}
       />
 
-   
+
       <View style={styles.content}>
         <BlurView
           style={StyleSheet.absoluteFill}
@@ -97,7 +104,7 @@ const res= await  downloadSong({song:track});
           overlayColor=""
         />
 
-     
+
         <View style={{ alignItems: 'center' }}>
           <Image
             source={{ uri: trackData.thumbnail }}
@@ -136,7 +143,7 @@ const res= await  downloadSong({song:track});
           </Text>
         </View>
 
-    
+
         <View
           style={{
             alignItems: 'center',
@@ -145,23 +152,23 @@ const res= await  downloadSong({song:track});
             gap: 10,
           }}
         >
-        
+
           <TouchableOpacity style={styles.actionButton} onPress={handleFavToggle}>
             <Text style={styles.buttonText}>
               {liked ? 'Remove from fav' : 'Add to fav'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} onPress={()=>{
-             handleDownload(track)
+          <TouchableOpacity style={styles.actionButton} onPress={() => {
+            handleDownload()
           }}>
-            <Text style={styles.buttonText}>Download</Text>
+            <Text style={styles.buttonText}>{isInDownload ? "Delete" : "Download"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} 
-          onPress={()=>{
-            deleteAllDownloads(realm);
-          }}
+          <TouchableOpacity style={styles.actionButton}
+            onPress={() => {
+              ToastAndroid.show("will be played next", ToastAndroid.SHORT);
+            }}
           >
             <Text style={styles.buttonText}>Play Next</Text>
           </TouchableOpacity>
@@ -175,9 +182,9 @@ export default PopUpScreen;
 
 const styles = StyleSheet.create({
   container: {
-   width: "100%",
-   height: "100%"
-    
+    width: "100%",
+    height: "100%"
+
   },
   exit: {
     height: '50%',

@@ -44,7 +44,8 @@ return (
                    renderItem={renderItem}
                    keyExtractor={(item,index)=> item.id+index}
                   initialNumToRender={30}
-              maxToRenderPerBatch={5}
+                 maxToRenderPerBatch={5}
+                 showsVerticalScrollIndicator={false}
                    windowSize={10}
                    removeClippedSubviews={true}
                    onEndReachedThreshold={0.8}
