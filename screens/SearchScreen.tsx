@@ -119,7 +119,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
     };
 
     return (
-      <SafeAreaView style={{flex:1,  backgroundColor: 'rgba(53, 1, 27, 0.8)',}}>
+      <SafeAreaView style={{flex:1, 
+      //  backgroundColor: 'rgba(53, 1, 27, 0.8)',
+      backgroundColor:"black"
+       }}>
     
       <View style={styles.container}>
         <Text style={styles.title}>Search for songs</Text>

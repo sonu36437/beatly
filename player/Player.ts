@@ -9,6 +9,7 @@ class Player{
   public playingFromScreen:string;
   public currentSongId:string|undefined;
   private suggestedSongQueue:any=[]
+  private playNextActive:any;
 
   constructor(){
     this.currentIndex=-1;
@@ -95,6 +96,9 @@ class Player{
    return;
 
   }
+  public setPlayNext(song:any){
+    this.playNextActive=song;
+  }
   public addToQueue(songs:[]){
     console.log("called addtoquer:" + this.queue.length)
     const slicedSong=songs.slice(this.queue.length,songs.length)
@@ -104,6 +108,11 @@ class Player{
 
   public playNext(){
     console.log("called next");
+    // if(this.playNextActive){
+    //   this.resetAndPlay(this.playNext);
+    //   this.playNextActive=null;
+    //   return;
+    // }
     if(this.suggestedSongQueue.length>0){
      this.currentIndex++;
       this.resetAndPlay(this.suggestedSongQueue[this.currentIndex%this.suggestedSongQueue.length])

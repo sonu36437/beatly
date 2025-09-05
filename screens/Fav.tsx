@@ -36,7 +36,10 @@ export default function Fav() {
  }
 
   return (
-    <SafeAreaView style={{flex:1,paddingHorizontal:10,backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
+    <SafeAreaView style={{flex:1,paddingHorizontal:10,
+    // backgroundColor:'rgba(53, 1, 27, 0.8)'
+    backgroundColor:'black'
+    }}>
       
     <View >
        <FlatList

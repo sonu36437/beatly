@@ -6,6 +6,7 @@ import { ToastAndroid } from "react-native";
 import notifee from '@notifee/react-native';
 import Realm from "realm";
 import DownloadDB from "../databases/DownloadDb";
+import { isSongDownloaded } from "./ButtonsActions";
 type range = {
     start: number,
     end: number,
@@ -222,6 +223,7 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
 
     }
     console.log("delete temp file")
+ 
     await songCompleteWalaNotification(song,channelId);
     return songMetaData
 

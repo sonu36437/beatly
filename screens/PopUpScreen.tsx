@@ -15,6 +15,9 @@ import { wrapMigration } from 'realm';
 import Download from '../utils/Download';
 import { downloadFile } from 'react-native-fs';
 import { deleteParticularSong, downloadSong } from '../utils/ChunksDownload';
+import useIsSongLiked from '../hooks/UseIsSongLiked';
+import useSongInDownload from '../hooks/UseSongInDownload';
+import { player } from '../player/Player';
 
 function PopUpScreen({ track }: any) {
   const realm = useRealm();
@@ -34,30 +37,15 @@ function PopUpScreen({ track }: any) {
   }, [track]);
 
 
-  const liked = useMemo(() => {
-    if (!trackData?.id) return false;
-    return isFavorite(realm, trackData.id);
-  }, [trackData?.id, realm]);
-
-  const isInDownload = useMemo(() => {
-    return isSongDownloaded(realm, trackData?.id)
-
-  }, [trackData?.id, realm])
+  const [liked, toggleFav]= useIsSongLiked(track)
+  const[ isInDownload] = useSongInDownload(track)
 
   const handleFavToggle = () => {
-    if (!trackData) return;
-    if (liked) {
-      removeFromFavorites(realm, trackData.id);
-      setTimeout(() => {
-        closeModal();
-
-
-      }, 100);
-
-    } else {
-      addToFavorites(realm, trackData);
+    toggleFav();
+    setTimeout(()=>{
       closeModal();
-    }
+    },100)
+  
 
   };
   const handleDownload = async () => {
@@ -69,14 +57,10 @@ function PopUpScreen({ track }: any) {
     const res = await downloadSong({ song: track });
     if (res) {
       pushToDownloads(realm, res);
+    
     }
 
   }
-  useEffect(() => {
-    if (isClosing) {
-      closeModal();
-    }
-  }, [isClosing]);
 
   if (!trackData || isClosing) {
     return null;
@@ -136,7 +120,7 @@ function PopUpScreen({ track }: any) {
             style={{
               fontFamily: 'Rubik-Bold',
               textAlign: 'center',
-              color: 'rgba(255,255,255,0.7)',
+              color: 'rgba(255, 255, 255, 1)',
             }}
           >
             {trackData.title}
@@ -154,7 +138,7 @@ function PopUpScreen({ track }: any) {
         >
 
           <TouchableOpacity style={styles.actionButton} onPress={handleFavToggle}>
-            <Text style={styles.buttonText}>
+            <Text style={[styles.buttonText,{color:liked?"red":"green"}]}>
               {liked ? 'Remove from fav' : 'Add to fav'}
             </Text>
           </TouchableOpacity>
@@ -167,7 +151,10 @@ function PopUpScreen({ track }: any) {
 
           <TouchableOpacity style={styles.actionButton}
             onPress={() => {
+
+              player.setPlayNext(track)
               ToastAndroid.show("will be played next", ToastAndroid.SHORT);
+
             }}
           >
             <Text style={styles.buttonText}>Play Next</Text>
@@ -189,7 +176,7 @@ const styles = StyleSheet.create({
   exit: {
     height: '50%',
     width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
   },
   content: {
     height: Height * 0.5,
@@ -199,13 +186,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   actionButton: {
-    backgroundColor: 'rgba(193, 38, 38, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
     padding: '3%',
     borderRadius: 20,
     width: '50%',
   },
   buttonText: {
-    color: 'white',
+   color:"black",
     textAlign: 'center',
     fontFamily: 'Rubik-Bold',
   },

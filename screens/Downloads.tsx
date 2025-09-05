@@ -27,7 +27,7 @@ export default function Downloads() {
   },[songs])
    if(songs.length===0){
       return(
-          <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
+          <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0, 0, 0, 1)'}}>
               <Text style={{color:'white',fontFamily:'Rubik-Bold'}}>No songs found</Text>
           </View>
       )
@@ -35,8 +35,8 @@ export default function Downloads() {
   
   
 return (
-    <SafeAreaView style={{flex:1,paddingHorizontal:10,backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
-      <Text style={{fontFamily:'Rubik-Bold',fontSize:20,color:'white',paddingHorizontal:10}}>Downloads</Text>
+    <SafeAreaView style={{flex:1,paddingHorizontal:10,backgroundColor:'black'}}>
+      <Text style={{fontFamily:'Rubik-Bold',fontSize:25,color:'white',paddingHorizontal:10,paddingTop:15}}>Downloads</Text>
       
     <View >
        <FlatList
@@ -48,6 +48,7 @@ return (
                  showsVerticalScrollIndicator={false}
                    windowSize={10}
                    removeClippedSubviews={true}
+                   overScrollMode='always'
                    onEndReachedThreshold={0.8}
                    contentContainerStyle={{paddingBottom: 200, paddingTop: 20}}
                    

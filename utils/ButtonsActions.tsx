@@ -9,9 +9,10 @@ import { Alert, ToastAndroid } from 'react-native';
 export const addToFavorites = (realm: Realm, track: {
   id: string;
   title: string;
-  artists: string;
+  artists: string|"unknown";
   thumbnail: string;
-}) => {
+},setState?:()=>void) => {
+  console.log(track);
   try {
     realm.write(() => {
       realm.create(
@@ -21,6 +22,7 @@ export const addToFavorites = (realm: Realm, track: {
       );
     });
     ToastAndroid.show('Added to favorites', ToastAndroid.SHORT);
+setState?.();
     return true;
   } catch (e) {
     console.error("Error adding to favorites:", e);
@@ -49,7 +51,7 @@ export const pushToDownloads=(realm: Realm,track:any)=>{
 }
 
 
-export const removeFromFavorites = (realm: Realm, trackId: string) => {
+export const removeFromFavorites = (realm: Realm, trackId: string,setState?:()=>void) => {
   try {
     realm.write(() => {
       const song = realm.objectForPrimaryKey('FavSong', trackId);
@@ -58,6 +60,9 @@ export const removeFromFavorites = (realm: Realm, trackId: string) => {
       }
     });
     ToastAndroid.show('removed from favorites', ToastAndroid.SHORT);
+   setTimeout(()=>{
+       setState?.();
+   },100)
     return true;
   } catch (e) {
     console.error("Error removing from favorites:", e);
@@ -77,8 +82,11 @@ export const isFavorite = (realm: Realm, trackId: string): boolean => {
 export const isSongDownloaded=(realm:Realm,trackId:string):boolean=>{
   try{
     return realm.objectForPrimaryKey('DownloadDB',trackId) !== null;
+
+ 
   }catch(e){
     console.log(e);
+
   }
   return false;
 }

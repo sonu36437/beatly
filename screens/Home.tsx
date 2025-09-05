@@ -64,7 +64,11 @@ const wishUser = (): string => {
 
 
   return (
-    <SafeAreaView style={{flex:1,backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
+    <SafeAreaView style={{flex:1,
+    // backgroundColor:'rgba(74, 8, 41, 0.8)'
+    backgroundColor:'black'
+    }
+    }>
     <View style={styles.container}>
 
       
@@ -75,7 +79,13 @@ const wishUser = (): string => {
           paddingTop:20
         }
         
-      } >
+      }
+      overScrollMode='always'
+      bounces={true}
+      bouncesZoom={true}
+      showsVerticalScrollIndicator={false}
+      
+       >
         <View style={{height:100,justifyContent:'center', paddingHorizontal:10 }}>
           <Text style={{fontFamily:"Rubik-Bold", fontSize:25,color:"white"}}>{wish}</Text>
         
@@ -109,7 +119,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop:0,
-    backgroundColor:'rgba(53, 1, 27, 0.8)'
+    // backgroundColor:'rgba(53, 1, 27, 0.8)'
+    backgroundColor:'black'
   
    
   },

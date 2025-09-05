@@ -116,7 +116,11 @@ export default function MyTabs() {
       const insets = useSafeAreaInsets();
   return (
   
-    <View style={[ { paddingBottom: insets.bottom,flex:1,backgroundColor:'rgba(52, 2, 34, 0.4)' }]}>
+    <View style={[ { paddingBottom: insets.bottom,flex:1,
+    // backgroundColor:'rgba(52, 2, 34, 0.4)'
+    backgroundColor:'black'
+     }]}>
+
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -143,7 +147,7 @@ export default function MyTabs() {
     },
     headerBackground: () => (
       <BlurView
-        style={[StyleSheet.absoluteFill,{backgroundColor:'rgba(52, 2, 34, 0.4)'}]}
+        style={[StyleSheet.absoluteFill,{backgroundColor:'rgba(0, 0, 0, 0.5)'}]}
         blurType="dark"
         blurAmount={20}
         blurRadius={20}
@@ -179,7 +183,8 @@ const styles = StyleSheet.create({
     
     width:"100%",
     alignSelf:'center',
-    backgroundColor: 'rgba(52, 2, 34, 0.4)',
+    // backgroundColor: 'rgba(52, 2, 34, 0.4)',
+    backgroundColor:'black',
  
   },
   tabContent: {
