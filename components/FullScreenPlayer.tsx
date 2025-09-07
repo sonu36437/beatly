@@ -12,6 +12,7 @@ import { addToFavorites, isFavorite, isSongDownloaded, pushToDownloads, removeFr
 import { useRealm } from '@realm/react';
 import useIsSongLiked from '../hooks/UseIsSongLiked';
 import useSongInDownload from '../hooks/UseSongInDownload';
+import useRepeatMode from '../hooks/useRepeatMode';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -20,11 +21,11 @@ const formatTime = (seconds: number) => {
 };
 
 export default function FullScreenPlayer({ currentTrack }: any) {
-  console.log(currentTrack);
+
   const realm = useRealm();
   const progress = useProgress();
   const playbackState = usePlaybackState();
-  const [repeatMode,setRepeatMode]=useState(false);
+  const [repeatMode,repeat]=useRepeatMode()
   const[ isSongLiked,toggleFav]=useIsSongLiked(currentTrack);
   const trackData = useMemo(() => {
       if (!currentTrack) return null;
@@ -39,11 +40,6 @@ export default function FullScreenPlayer({ currentTrack }: any) {
 
   const { isPlaying, togglePlayPause } = usePlayerStore();
   const [isInDownload,updateState] = useSongInDownload(trackData);
-  console.log(isInDownload);
-  
-
-
-
 
   const handlePlayPause = useCallback(async () => {
     try {
@@ -60,17 +56,12 @@ export default function FullScreenPlayer({ currentTrack }: any) {
   }, [playbackState.state, togglePlayPause]);
   
 
-  const handleRepeatMode=()=>{
-    if(!repeatMode){
-      setRepeatMode(true);
-      TrackPlayer.setRepeatMode(RepeatMode.Track);
-      ToastAndroid.show("Repeat On",ToastAndroid.SHORT)
-      
-      return;
-    }
-    setRepeatMode(false);
-    TrackPlayer.setRepeatMode(RepeatMode.Off);
-      ToastAndroid.show("Repeat OFF",ToastAndroid.SHORT)
+  const handleRepeatMode= async()=>{
+
+// await repeat(!repeat);
+   await repeat(!repeatMode);
+
+
   
 
   }
