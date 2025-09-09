@@ -7,6 +7,7 @@ import { SearchResult } from 'onlynativetube/utils/parsers';
 import LoadingIndicatior from '../components/LoadingIndicatior';
 import { useNavigation } from '@react-navigation/native';
 import { CacheData, GetAllCacheKeys, GetCache, HasValidCache, RemoveCache } from '../utils/Storage';
+import { CheckForUpdate, getAppCurrentVersion } from '../utils/CheckForUpdate';
 
 const categories = [
   { query: "top bollywood songs", Title: "Bollwood Hits" },
@@ -33,7 +34,7 @@ export default function Home() {
       return "Good Morning 🌞";
     } else if (hour >= 12 && hour < 17) {
       return "Good Afternoon ☀️";
-    } else if (hour >= 17 && hour < 21) {
+    } else if (hour >= 17 && hour < 22) {
       return "Good Evening 🌇";
     } else {
       return "Hey night owl sleep now⏰";
@@ -78,6 +79,7 @@ export default function Home() {
 
   useEffect(() => {
     setWish(wishUser())
+    CheckForUpdate();
     fetchSongs();
   }, [])
 
@@ -111,8 +113,14 @@ export default function Home() {
           
 
         >
-          <View style={{ height: 100, justifyContent: 'center', paddingHorizontal: 10 }}>
+          <View style={{ height: 100,width:"100%", flexDirection:'row',justifyContent:'space-between',paddingHorizontal:30}}>
             <Text style={{ fontFamily: "Rubik-Bold", fontSize: 25, color: "white" }}>{wish}</Text>
+            {/* <TouchableOpacity style={{height:40,width:20,backgroundColor:'red'}} 
+            onPress={()=>{
+              CheckForUpdate()
+            }}
+            
+            ></TouchableOpacity> */}
         
 
 
