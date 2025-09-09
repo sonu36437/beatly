@@ -41,18 +41,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
     const [isFullScreen, setIsFullScreen] = useState(false);
     const inset= useSafeAreaInsets();
   
-    // useEffect(() => {
-    //   const listener = TrackPlayer.addEventListener(
-    //     Event.PlaybackActiveTrackChanged,
-    //     async event => {
-    //       setTrack(event.track);
-    //     },
-    //   );
-    //   return () => {
-    //     listener.remove();
-    //   };
-    // }, []);
-  
     useEffect(() => {
       const listener = TrackPlayer.addEventListener(
         Event.PlaybackState,
@@ -116,14 +104,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
                   style={{padding:10,marginRight:20}}
                 
                 >
-                  {isPlaying ? <MaterialCommunityIcons name="pause" size={30} color="skyblue" /> : <MaterialCommunityIcons name="play" size={30} color="red"/>}
+                  {isPlaying ? <MaterialCommunityIcons name="pause" size={30} color="white" /> : <MaterialCommunityIcons name="play" size={30} color="white"/>}
                 </TouchableOpacity>
                 
               </View>
             </View>
       
         </TouchableOpacity>
-        <Modal visible={isFullScreen} animationType='slide'  onRequestClose={()=>{
+        <Modal visible={isFullScreen} animationType='fade'  onRequestClose={()=>{
             setIsFullScreen(false)
         }}>
             <FullScreenPlayer currentTrack={currentTrack}/>

@@ -39,7 +39,7 @@ export const HasValidCache = async (key: string): Promise<boolean> => {
     const data = await AsyncStorage.getItem(key);
     if (!data) return false;
     const parsedData: CacheItem = JSON.parse(data);
-    if (parsedData.expiry === undefined) return true;
+    if (!parsedData.expiry) return true;
     if (Date.now() > parsedData.expiry) {
       await AsyncStorage.removeItem(key);
       return false;

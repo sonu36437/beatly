@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, StatusBar, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, StatusBar, ToastAndroid, Dimensions } from 'react-native';
 import React, { useMemo, useState, useEffect } from 'react';
 import { BlurView } from '@react-native-community/blur';
 import { useRealm } from '@realm/react';
@@ -22,8 +22,6 @@ import { player } from '../player/Player';
 function PopUpScreen({ track }: any) {
   const realm = useRealm();
   const { closeModal } = useModalStore();
-  const [isClosing, setIsClosing] = useState(false);
-
 
   const trackData = useMemo(() => {
     if (!track) return null;
@@ -36,49 +34,41 @@ function PopUpScreen({ track }: any) {
     };
   }, [track]);
 
-
-  const [liked, toggleFav]= useIsSongLiked(track)
-  const[ isInDownload] = useSongInDownload(track)
+  const [liked, toggleFav] = useIsSongLiked(track);
+  const [isInDownload] = useSongInDownload(track);
 
   const handleFavToggle = () => {
     toggleFav();
-    setTimeout(()=>{
+     setTimeout(()=>{
       closeModal();
-    },100)
-  
 
+     },60)
   };
+
   const handleDownload = async () => {
-    closeModal();
-    console.log("form handleDownload button ", track)
-    if(isInDownload){
-        deleteParticularSong(realm,track);
+    if (isInDownload) {
+      deleteParticularSong(realm, track);
+      closeModal();
+      return;
     }
+    
     const res = await downloadSong({ song: track });
     if (res) {
       pushToDownloads(realm, res);
-    
     }
-
+    closeModal();
   }
 
-  if (!trackData || isClosing) {
+  if (!trackData) {
     return null;
   }
 
   return (
-
     <View style={styles.container}>
-      <StatusBar hidden={true} />
-
-
       <TouchableOpacity
         style={styles.exit}
-        onPress={() => {
-          setIsClosing(true);
-        }}
+        onPress={closeModal}
       />
-
 
       <View style={styles.content}>
         <BlurView
@@ -88,13 +78,10 @@ function PopUpScreen({ track }: any) {
           overlayColor=""
         />
 
-
         <View style={{ alignItems: 'center' }}>
           <Image
             source={{ uri: trackData.thumbnail }}
-            height={80}
-            width={120}
-            style={{ borderRadius: 10 }}
+            style={{ height: Height*0.1, width: 120, borderRadius: 10 }}
           />
         </View>
 
@@ -102,7 +89,7 @@ function PopUpScreen({ track }: any) {
           style={{
             alignItems: 'center',
             width: '100%',
-            gap: 2,
+            
             paddingLeft: 30,
             paddingRight: 30,
           }}
@@ -121,12 +108,12 @@ function PopUpScreen({ track }: any) {
               fontFamily: 'Rubik-Bold',
               textAlign: 'center',
               color: 'rgba(255, 255, 255, 1)',
+              fontSize:Dimensions.get("screen").fontScale*14
             }}
           >
             {trackData.title}
           </Text>
         </View>
-
 
         <View
           style={{
@@ -136,25 +123,21 @@ function PopUpScreen({ track }: any) {
             gap: 10,
           }}
         >
-
           <TouchableOpacity style={styles.actionButton} onPress={handleFavToggle}>
-            <Text style={[styles.buttonText,{color:liked?"red":"green"}]}>
+            <Text style={[styles.buttonText, { color: liked ? "red" : "green" }]}>
               {liked ? 'Remove from fav' : 'Add to fav'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} onPress={() => {
-            handleDownload()
-          }}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleDownload}>
             <Text style={styles.buttonText}>{isInDownload ? "Delete" : "Download"}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton}
             onPress={() => {
-
-              player.setPlayNext(track)
+              player.setPlayNext(track);
               ToastAndroid.show("will be played next", ToastAndroid.SHORT);
-
+              closeModal();
             }}
           >
             <Text style={styles.buttonText}>Play Next</Text>
@@ -165,13 +148,12 @@ function PopUpScreen({ track }: any) {
   );
 }
 
-export default PopUpScreen;
+export default React.memo(PopUpScreen);
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "100%"
-
+    height: "100%",
   },
   exit: {
     height: '50%',
@@ -181,19 +163,23 @@ const styles = StyleSheet.create({
   content: {
     height: Height * 0.5,
     width: Width * 1,
-    paddingTop: Height * 0.03,
+    paddingTop: Height * 0.01,
     borderRadius: 10,
-    overflow: 'hidden',
+    
+   
   },
   actionButton: {
     backgroundColor: 'rgba(255, 255, 255, 1)',
     padding: '3%',
     borderRadius: 20,
-    width: '50%',
+    width: '60%',
+    height:"20%",
+    
   },
   buttonText: {
-   color:"black",
+    color: "black",
     textAlign: 'center',
     fontFamily: 'Rubik-Bold',
+    fontSize:Dimensions.get("screen").fontScale*12
   },
 });

@@ -29,7 +29,7 @@ export default function Fav() {
  }
  if(songs.length===0){
     return(
-        <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(53, 1, 27, 0.8)'}}>
+        <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0, 0, 0, 0.8)'}}>
             <Text style={{color:'white',fontFamily:'Rubik-Bold'}}>No songs found</Text>
         </View>
     )

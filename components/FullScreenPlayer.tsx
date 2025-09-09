@@ -25,21 +25,21 @@ export default function FullScreenPlayer({ currentTrack }: any) {
   const realm = useRealm();
   const progress = useProgress();
   const playbackState = usePlaybackState();
-  const [repeatMode,repeat]=useRepeatMode()
-  const[ isSongLiked,toggleFav]=useIsSongLiked(currentTrack);
+  const [repeatMode, repeat] = useRepeatMode()
+  const [isSongLiked, toggleFav] = useIsSongLiked(currentTrack);
   const trackData = useMemo(() => {
-      if (!currentTrack) return null;
-      return {
-        id: currentTrack.id,
-        title: currentTrack.title,
-        artists: currentTrack.artists || '',
-        artwork: currentTrack.artwork,
-        thumbnail: currentTrack.thumbnails?.[0]?.url || currentTrack.artwork,
-      };
-    }, [currentTrack]);
+    if (!currentTrack) return null;
+    return {
+      id: currentTrack.id,
+      title: currentTrack.title,
+      artists: currentTrack.artists || '',
+      artwork: currentTrack.artwork,
+      thumbnail: currentTrack.thumbnails?.[0]?.url || currentTrack.artwork,
+    };
+  }, [currentTrack]);
 
   const { isPlaying, togglePlayPause } = usePlayerStore();
-  const [isInDownload,updateState] = useSongInDownload(trackData);
+  const [isInDownload, updateState] = useSongInDownload(trackData);
 
   const handlePlayPause = useCallback(async () => {
     try {
@@ -54,15 +54,15 @@ export default function FullScreenPlayer({ currentTrack }: any) {
       console.error('Play/Pause error:', error);
     }
   }, [playbackState.state, togglePlayPause]);
-  
-
-  const handleRepeatMode= async()=>{
-
-// await repeat(!repeat);
-   await repeat(!repeatMode);
 
 
-  
+  const handleRepeatMode = async () => {
+
+    // await repeat(!repeat);
+    await repeat(!repeatMode);
+
+
+
 
   }
 
@@ -75,17 +75,17 @@ export default function FullScreenPlayer({ currentTrack }: any) {
     const res = await downloadSong({ song: currentTrack });
     if (res) {
       pushToDownloads(realm, res);
-      ToastAndroid.show("Downloaded",ToastAndroid.SHORT);
+      ToastAndroid.show("Downloaded", ToastAndroid.SHORT);
       updateState();
- 
+
     }
 
   }
-    const handleFavToggle = () => {
-     
-      toggleFav();
-  
-    };
+  const handleFavToggle = () => {
+
+    toggleFav();
+
+  };
 
 
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function FullScreenPlayer({ currentTrack }: any) {
 
           <TouchableOpacity
             onPress={handlePlayPause}
-            style={[ { backgroundColor: 'white',borderRadius:40 }]}
+            style={[{ backgroundColor: 'white', borderRadius: 40 }]}
           >
             {playbackState.state === State.Buffering ? (
               <ActivityIndicator color="black" size="large" />
@@ -161,7 +161,7 @@ export default function FullScreenPlayer({ currentTrack }: any) {
 
           <TouchableOpacity
             onPress={() => player.playNext()}
-          
+
           >
             <MaterialCommunityIcons name="skip-next" size={70} color="white" />
           </TouchableOpacity>
@@ -181,13 +181,13 @@ export default function FullScreenPlayer({ currentTrack }: any) {
             <MaterialCommunityIcons name="download" size={24} color={isInDownload ? "rgba(78, 77, 77, 1)" : "rgba(94, 255, 0, 1)"} />
             <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{isInDownload ? "Downloaded" : "Download"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={()=>{handleFavToggle()}}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => { handleFavToggle() }}>
             <MaterialCommunityIcons name="heart" size={24} color={isSongLiked ? "red" : "white"} />
             <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{isSongLiked ? "Liked" : "Like"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton} onPress={handleRepeatMode}>
-            <MaterialCommunityIcons name="repeat" size={24} color={repeatMode?"rgba(94, 255, 0, 1)":"white"} />
-              <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{repeatMode ? "Repeat on" : "Repeat off"}</Text>
+            <MaterialCommunityIcons name="repeat" size={24} color={repeatMode ? "rgba(94, 255, 0, 1)" : "white"} />
+            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{repeatMode ? "Repeat on" : "Repeat off"}</Text>
           </TouchableOpacity>
         </View>
       </View>

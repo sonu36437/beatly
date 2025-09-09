@@ -6,9 +6,7 @@ export default function Modal({children,visible,onRequestClose,animationType,tra
 
   return (
     
-    <RnModal visible={visible} onRequestClose={onRequestClose} animationType={animationType} transparent={transparent} statusBarTranslucent={statusBarTranslucent} style={{margin:0,flex:1}}>
-      <StatusBar hidden={true}/>
-  
+    <RnModal visible={visible} onRequestClose={onRequestClose} animationType={animationType} transparent={transparent} >
       {children}
     </RnModal>
   )
