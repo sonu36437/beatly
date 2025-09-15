@@ -1,9 +1,10 @@
 import { Alert, BackHandler, Linking } from 'react-native';
 import pkg from '../package.json'
+import DeviceInfo from 'react-native-device-info';
 export function getAppCurrentVersion() {
-    console.log(pkg.version);
+   const version= DeviceInfo.getVersion();
 
-    return pkg.version;
+    return version;
 }
 export async function CheckForUpdate() {
     const url = "https://api.github.com/repos/sonu36437/beatly/releases/latest";
