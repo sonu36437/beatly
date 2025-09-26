@@ -14,6 +14,7 @@ import useIsSongLiked from '../hooks/UseIsSongLiked';
 import useSongInDownload from '../hooks/UseSongInDownload';
 import useRepeatMode from '../hooks/useRepeatMode';
 import localImageLink from '.././images/first'
+import { play } from 'react-native-track-player/lib/src/trackPlayer';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -42,19 +43,10 @@ export default function FullScreenPlayer({ currentTrack }: any) {
   const { isPlaying, togglePlayPause } = usePlayerStore();
   const [isInDownload, updateState] = useSongInDownload(trackData);
 
-  const handlePlayPause = useCallback(async () => {
-    try {
-      if (playbackState.state === State.Playing) {
-        await TrackPlayer.pause();
-      } else {
-        await TrackPlayer.play();
-      }
-
-      togglePlayPause(playbackState.state !== State.Playing);
-    } catch (error) {
-      console.error('Play/Pause error:', error);
-    }
-  }, [playbackState.state, togglePlayPause]);
+const handlePlayPause= async()=>{
+   isPlaying?await TrackPlayer.pause():
+   await TrackPlayer.play();
+}
 
 
   const handleRepeatMode = async () => {
@@ -154,18 +146,19 @@ export default function FullScreenPlayer({ currentTrack }: any) {
             <MaterialCommunityIcons name="skip-previous" size={70} color="white" />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={handlePlayPause}
-            style={[{ backgroundColor: 'white', borderRadius: 40 }]}
-          >
-            {playbackState.state === State.Buffering ? (
-              <ActivityIndicator color="black" size="large" />
-            ) : playbackState.state === State.Playing ? (
-              <MaterialCommunityIcons name="pause" size={70} color="black" />
-            ) : (
-              <MaterialCommunityIcons name="play" size={70} color="black" />
-            )}
-          </TouchableOpacity>
+      
+{
+   playbackState.state==State.Buffering?
+   <ActivityIndicator color="white" size={40}/>:
+          <TouchableOpacity onPress={handlePlayPause}>
+            {
+          isPlaying?
+                <MaterialCommunityIcons name="pause" size={70} color="white" />
+                :
+                 <MaterialCommunityIcons name="play" size={70} color="white" />
+                
+            }
+          </TouchableOpacity>}
 
           <TouchableOpacity
             onPress={() => player.playNext()}
@@ -224,6 +217,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: Dimensions.get("screen").fontScale * 18,
+    height:Height*0.08,
     fontFamily: 'Rubik-Bold',
     textAlign: 'center',
     marginBottom: 20,

@@ -48,15 +48,15 @@ function PopUpScreen({ track }: any) {
   const handleDownload = async () => {
     if (isInDownload) {
       deleteParticularSong(realm, track);
-      closeModal();
-      return;
     }
+     closeModal();
     
     const res = await downloadSong({ song: track });
+     
     if (res) {
       pushToDownloads(realm, res);
     }
-    closeModal();
+  
   }
 
   if (!trackData) {
