@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     backgroundColor: 'rgba(255, 255, 255, 1)',
-    padding: '3%',
+    justifyContent:'center',
     borderRadius: 20,
     width: '60%',
     height:"20%",

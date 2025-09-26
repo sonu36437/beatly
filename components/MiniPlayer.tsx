@@ -7,14 +7,16 @@ import {
     Modal,
     Button,
     Alert,
+    ActivityIndicator,
   } from 'react-native';
   import React, { useCallback, useEffect, useState } from 'react';
   import { BlurView } from '@react-native-community/blur';
   import { usePlayerStore } from '../store/PlayerStore';
-  import TrackPlayer, { Event } from 'react-native-track-player';
+  import TrackPlayer, { Event, State, usePlaybackState } from 'react-native-track-player';
   import FullScreenPlayer from './FullScreenPlayer';
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import LoadingIndicatior from './LoadingIndicatior';
   
  export function PlayButton({size=30}:{size:number}) {
 
@@ -40,6 +42,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
     const { isPlaying, currentTrack, setTrack, togglePlayPause } = usePlayerStore();
     const [isFullScreen, setIsFullScreen] = useState(false);
     const inset= useSafeAreaInsets();
+    const playerStatus= usePlaybackState();
   
     useEffect(() => {
       const listener = TrackPlayer.addEventListener(
@@ -77,7 +80,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
      
               <View style={styles.content}>
                 <Image
-                  source={{ uri: currentTrack?.artwork }}
+                  source={{ uri: currentTrack?.artwork  }}
                   style={styles.image}
                 />
                 <View style={{ width: '55%', marginRight: 15 }}>
@@ -92,8 +95,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
                     {currentTrack?.artist || currentTrack?.artists || 'Unknown Artist'}
                   </Text>
                 </View>
-  
-                <TouchableOpacity
+          { playerStatus.state ==State.Buffering? <ActivityIndicator color="white" size={30}/>:
+                 <TouchableOpacity
                   onPress={() => {
                     if (isPlaying) {
                       TrackPlayer.pause();
@@ -105,7 +108,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
                 
                 >
                   {isPlaying ? <MaterialCommunityIcons name="pause" size={30} color="white" /> : <MaterialCommunityIcons name="play" size={30} color="white"/>}
-                </TouchableOpacity>
+                </TouchableOpacity> }
                 
               </View>
             </View>

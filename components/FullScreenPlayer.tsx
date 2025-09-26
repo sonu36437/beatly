@@ -13,6 +13,7 @@ import { useRealm } from '@realm/react';
 import useIsSongLiked from '../hooks/UseIsSongLiked';
 import useSongInDownload from '../hooks/UseSongInDownload';
 import useRepeatMode from '../hooks/useRepeatMode';
+import localImageLink from '.././images/first'
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -113,7 +114,14 @@ export default function FullScreenPlayer({ currentTrack }: any) {
       />
 
       <View style={styles.content}>
-        <Image source={{ uri: currentTrack?.artwork }} style={styles.img} />
+<Image 
+  source={
+    currentTrack?.artwork 
+      ? { uri: currentTrack.artwork }   
+      : require("../logo.jpg")        
+  } 
+  style={styles.img} 
+/>
 
         <Text style={styles.title} numberOfLines={3}>
           {currentTrack?.title}

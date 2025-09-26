@@ -31,11 +31,15 @@ export default function App() {
 
     async function setupPlayer() {
       try {
-        await TrackPlayer.setupPlayer();
+        await TrackPlayer.setupPlayer({ autoHandleInterruptions: true,   maxCacheSize: 1024 * 100,
+                waitForBuffer: true,});
         console.log("setup up is done successfully")
         await TrackPlayer.updateOptions({
           android: {
+            
+            alwaysPauseOnInterruption:true,
             appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+            
 
           },
           capabilities: [
@@ -47,6 +51,8 @@ export default function App() {
 
 
           ]
+          
+
         })
 
       } catch (e) {
