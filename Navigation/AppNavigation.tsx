@@ -5,8 +5,10 @@ import { Text, PlatformPressable } from '@react-navigation/elements';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BlurView } from '@react-native-community/blur';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Home from '../screens/Home';
+import AppInfo from '../screens/AppInfo'
 import SearchScreen from '../screens/SearchScreen';
 import Downloads from '../screens/Downloads';
 import PopUpScreen from '../screens/PopUpScreen';
@@ -79,11 +81,14 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
           if (route.name === 'Home') {
             iconName = isFocused ? 'home' : 'home-outline';
           } else if (route.name === 'search') {
-            iconName = isFocused ? 'magnify' : 'magnify';
+            iconName = isFocused ? 'search' : 'search-outline';
           } else if (route.name === 'Downloads') {
             iconName = isFocused ? 'download' : 'download-outline';
           } else if (route.name === 'Fav') {
             iconName = isFocused ? 'heart' : 'heart-outline';
+          }
+          else if (route.name==="info"){
+           iconName = isFocused ? 'information-circle-outline' : 'information-circle-outline';
           }
 
           return (
@@ -93,7 +98,7 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
               onLongPress={onLongPress}
               style={styles.tabButton}
             >
-              <MaterialCommunityIcons
+              <Ionicons
                 name={iconName}
                 size={24}
                 color={isFocused ? 'white' : 'gray'}
@@ -162,6 +167,7 @@ export default function MyTabs() {
           
 
         <Tab.Screen name="Downloads" component={Downloads} />
+        <Tab.Screen name="info" component={AppInfo}/>
         
       </Tab.Navigator>
 

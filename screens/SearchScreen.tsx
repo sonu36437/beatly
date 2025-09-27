@@ -161,15 +161,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
             />
           </View>
         )}
-        {/* <Modal
-         visible={isModalVisible}
-         onRequestClose={()=>setIsModalVisible(false)}
-         animationType="fade"
-         children={<PopUpScreen track={clickedTrack}/>}
-         transparent={true}
-         statusBarTranslucent={true}
+       
 
-          /> */}
+        
       </View>
       </SafeAreaView>
     
