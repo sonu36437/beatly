@@ -90,11 +90,7 @@ export default function App() {
 
         <NavigationContainer theme={DarkTheme}>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-
-
-            <Stack.Screen name="nav" component={MyTabs} options={{
-              contentStyle: { backgroundColor: 'black' }
-            }} />
+            <Stack.Screen name="nav" component={MyTabs}  />
 
 
 

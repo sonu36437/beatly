@@ -18,6 +18,7 @@ import { useModalStore } from '../store/ModalStore';
 import TrackPlayer from 'react-native-track-player';
 import { SafeAreaView ,useSafeAreaInsets} from 'react-native-safe-area-context';
 import { Height } from '../constants/ScreenProportion';
+import Search from '../screens/Search';
 
 
 const Tab = createBottomTabNavigator();
@@ -30,14 +31,14 @@ function MyTabBar({ state, descriptors, navigation }:{state:any,descriptors:any,
   return (
 
   <View style={styles.container}>
-      <BlurView
+      {/* <BlurView
         style={StyleSheet.absoluteFill}
         blurType="dark"
         blurAmount={15}
         reducedTransparencyFallbackColor="orange"
         blurRadius={20}
         overlayColor=''
-      />
+      /> */}
       <View style={styles.tabContent}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -129,7 +130,8 @@ export default function MyTabs() {
         tabBar={(props) => <MyTabBar {...props} />}
       >
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="search" component={SearchScreen} />
+        {/* <Tab.Screen name="search" component={SearchScreen} /> */}
+          <Tab.Screen name="search" component={Search} />
         
         <Tab.Screen name="Fav"
   component={Fav}
