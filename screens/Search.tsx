@@ -87,7 +87,7 @@ function SearchScreen() {
 
     return (
         <View style={{ flex: 1, backgroundColor: "black", paddingTop: inset.top + 10, paddingHorizontal: 16 }}>
-            <Text style={{ textAlign: 'center', fontSize: 30 * FontScale, color: 'white', fontFamily: 'Rubik-Bold' }}>Search for songs</Text>
+            <Text style={{ textAlign: 'center', fontSize: 25 * FontScale, color: 'white', fontFamily: 'Rubik-Bold' }}>Search for songs</Text>
             <View
                 style={{
                     flexDirection: "row",
@@ -279,7 +279,7 @@ function SearchResult() {
                     navigation.goBack();
                 
                   }} style={{backgroundColor:"white", padding:5,borderRadius:50}}>
-                      <Ionicons name="search" size={30} color="black"/>
+                      <Ionicons name="search" size={25} color="black"/>
                   </TouchableOpacity>
                 </View>
 
