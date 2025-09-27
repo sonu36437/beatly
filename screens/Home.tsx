@@ -113,7 +113,7 @@ export default function Home() {
           
 
         >
-          <View style={{ height: 100,width:"100%", flexDirection:'row',justifyContent:'space-between',paddingHorizontal:30}}>
+          <View style={{ height: 50,width:"100%", flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10}}>
             <Text style={{ fontFamily: "Rubik-Bold", fontSize: 25, color: "white" }}>{wish}</Text>
             {/* <TouchableOpacity style={{height:40,width:20,backgroundColor:'red'}} 
             onPress={()=>{

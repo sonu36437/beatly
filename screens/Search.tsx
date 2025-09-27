@@ -278,8 +278,8 @@ function SearchResult() {
                   <TouchableOpacity onPress={()=>{
                     navigation.goBack();
                 
-                  }}>
-                      <Ionicons name="search" size={30} color="white"/>
+                  }} style={{backgroundColor:"white", padding:5,borderRadius:50}}>
+                      <Ionicons name="search" size={30} color="black"/>
                   </TouchableOpacity>
                 </View>
 
@@ -314,7 +314,7 @@ function SearchResult() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 10,
+    paddingHorizontal:10,
         paddingTop: 30,
     },
     title: {
