@@ -43,6 +43,8 @@ function SearchScreen() {
     const navigation = useNavigation();
     const inset = useSafeAreaInsets();
     const [input, setInput] = useState<string>("");
+    const route = useRoute();
+    const query=route.params;
 
 
 
@@ -53,11 +55,12 @@ function SearchScreen() {
         async function getCacheRecentSearches() {
             const res: [] = await GetCache("recentSearches");
             console.log([...res]);
-
-
             setRecentSearches(res)
         }
         getCacheRecentSearches();
+        if(query){
+            setInput(query.query)
+        }
 
     }, [])
 
@@ -123,6 +126,8 @@ function SearchScreen() {
 
                 <TouchableOpacity onPress={() => {
                     handleSearchClick()
+                     navigation.navigate("SearchResult", { query: input })
+                    
                 }}>
                     <Ionicons name="search" size={24} color="rgba(255,255,255,0.8)" />
                 </TouchableOpacity>
@@ -276,7 +281,7 @@ function SearchResult() {
                     </View>
 
                   <TouchableOpacity onPress={()=>{
-                    navigation.goBack();
+                    navigation.navigate("SearchScreen",{query:query});
                 
                   }} style={{backgroundColor:"white", padding:5,borderRadius:50}}>
                       <Ionicons name="search" size={25} color="black"/>
