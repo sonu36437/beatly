@@ -79,7 +79,7 @@ export default function Home() {
 
   useEffect(() => {
     setWish(wishUser())
-   Platform.OS==='ios' && CheckForUpdate();
+   Platform.OS==='android' && CheckForUpdate();
     fetchSongs();
   }, [])
 

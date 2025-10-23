@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator, ToastAndroid, Platform } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, { useProgress, Event, usePlaybackState, State, RepeatMode } from 'react-native-track-player';
@@ -15,6 +15,8 @@ import useSongInDownload from '../hooks/UseSongInDownload';
 import useRepeatMode from '../hooks/useRepeatMode';
 import localImageLink from '.././images/first'
 import { play } from 'react-native-track-player/lib/src/trackPlayer';
+import { useNavigation } from '@react-navigation/native';
+import Modal from './Modal';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -22,7 +24,7 @@ const formatTime = (seconds: number) => {
   return `${mins}:${secs < 10 ? '0' + secs : secs}`;
 };
 
-export default function FullScreenPlayer({ currentTrack }: any) {
+export default function FullScreenPlayer({ currentTrack ,visible }: any) {
 
   const realm = useRealm();
   const progress = useProgress();
@@ -42,6 +44,7 @@ export default function FullScreenPlayer({ currentTrack }: any) {
 
   const { isPlaying, togglePlayPause } = usePlayerStore();
   const [isInDownload, updateState] = useSongInDownload(trackData);
+  const navigation =useNavigation();
 
 const handlePlayPause= async()=>{
    isPlaying?await TrackPlayer.pause():
@@ -104,6 +107,11 @@ const handlePlayPause= async()=>{
         blurAmount={10}
         overlayColor=""
       />
+    { Platform.OS=== "ios" && <TouchableOpacity style={{backgroundColor:'red',height:20,width:20, padding:40}} onPress={()=>{
+       visible()
+      }}>
+         <Text>click me</Text>
+      </TouchableOpacity>}
 
       <View style={styles.content}>
 <Image 

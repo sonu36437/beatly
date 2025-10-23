@@ -117,7 +117,7 @@ import LoadingIndicatior from './LoadingIndicatior';
         <Modal visible={isFullScreen} animationType='fade'  onRequestClose={()=>{
             setIsFullScreen(false)
         }}>
-            <FullScreenPlayer currentTrack={currentTrack}/>
+            <FullScreenPlayer currentTrack={currentTrack} visible={setIsFullScreen}/>
         </Modal>
       
      
