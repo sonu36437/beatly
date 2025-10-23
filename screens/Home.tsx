@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SongCard from '../components/SongCard';
@@ -79,7 +79,7 @@ export default function Home() {
 
   useEffect(() => {
     setWish(wishUser())
-    CheckForUpdate();
+   Platform.OS==='ios' && CheckForUpdate();
     fetchSongs();
   }, [])
 
