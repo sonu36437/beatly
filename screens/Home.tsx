@@ -13,7 +13,7 @@ const categories = [
   { query: "top bollywood songs", Title: "Bollwood Hits" },
   { query: "romantic songs", Title: "Romantic Songs" },
   { query: "workout songs", Title: "Workout Songs" },
-  { query: "english songs", Title: "Top English Songs" },
+  { query: "english", Title: "Top English Songs" },
 ];
 
 interface SearchResponse {
@@ -54,8 +54,11 @@ export default function Home() {
     const haveCache= await GetCache("homePageData");
     const isCacheValid= await HasValidCache("homePageData");
     console.log(isCacheValid);
-    if (haveCache && isCacheValid) {
+    if (haveCache.length>0 && isCacheValid) {
       console.log("using cache data");
+      console.log(haveCache);
+      
+      
       setSongs(haveCache);
       return;
 
@@ -63,7 +66,7 @@ export default function Home() {
 
     for (let cat of categories) {
       try {
-        const response: SearchResponse = await innertube.search(cat.query);
+        const response: SearchResponse = (await innertube.search(cat.query));
         allsongs.push(response);
         setSongs((prev) => [...prev, response])
       } catch (err) {
