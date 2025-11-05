@@ -1,4 +1,9 @@
 {
   "name": "beatly",
-  "displayName": "beatly"
+  "displayName": "beatly",
+  "extra": {
+    "eas": {
+      "projectId": "79c7eb87-c885-469c-bd52-de293fe91962"
+    }
+  }
 }

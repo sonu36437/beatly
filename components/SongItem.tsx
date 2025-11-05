@@ -4,6 +4,7 @@ import { player } from '../player/Player';
 import { useNavigation ,useRoute} from '@react-navigation/native';
 import { useModalStore } from '../store/ModalStore';
 import PopUpScreen from '../screens/PopUpScreen';
+import TrackPlayer from 'react-native-track-player';
 function formatThumnail(song:any){
 
    if(song.thumbnails){
@@ -22,6 +23,7 @@ const {openModal} = useModalStore();
   return (
     <TouchableOpacity
     onPress={clickedOne}
+   
     >
 
 

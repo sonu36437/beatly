@@ -1,4 +1,4 @@
-import { View, Text, Alert, StatusBar } from 'react-native'
+import { View, Text, Alert, StatusBar, Platform } from 'react-native'
 import React, { useEffect } from 'react'
 import SearchScreen from './screens/SearchScreen'
 import TrackPlayer, { AppKilledPlaybackBehavior, Capability, Event } from 'react-native-track-player'
@@ -31,9 +31,11 @@ export default function App() {
 
     async function setupPlayer() {
       try {
-        await TrackPlayer.setupPlayer({ autoHandleInterruptions: true,   maxCacheSize: 1024 * 100,
-                waitForBuffer: true,});
-        console.log("setup up is done successfully")
+        await TrackPlayer.setupPlayer({ autoHandleInterruptions: true, 
+            maxCacheSize: 1024 * 100,
+                waitForBuffer: true
+              });
+              console.log("setup up is done successfully")
         await TrackPlayer.updateOptions({
           android: {
             
@@ -61,7 +63,10 @@ export default function App() {
       }
 
     }
-    setupPlayer();
+
+    
+ setupPlayer();
+
 
   }, [])
   useEffect(() => {

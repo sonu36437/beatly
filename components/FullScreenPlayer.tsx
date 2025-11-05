@@ -17,6 +17,7 @@ import localImageLink from '.././images/first'
 import { play } from 'react-native-track-player/lib/src/trackPlayer';
 import { useNavigation } from '@react-navigation/native';
 import Modal from './Modal';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -107,12 +108,28 @@ const handlePlayPause= async()=>{
         blurAmount={10}
         overlayColor=""
       />
-    { Platform.OS=== "ios" && <TouchableOpacity style={{backgroundColor:'red',height:20,width:20, padding:40}} onPress={()=>{
-       visible()
-      }}>
-         <Text>click me</Text>
-      </TouchableOpacity>}
-
+  {Platform.OS === "ios" && (
+  <TouchableOpacity
+    style={{
+      position: "absolute",
+      top: 50,
+      alignSelf: "center", 
+      zIndex: 99,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 10,
+    }}
+    onPress={() => {
+      visible(false);
+    }}
+  >
+    <Ionicons
+      name="chevron-down"
+      size={40}
+      color="white"
+    />
+  </TouchableOpacity>
+)}  
       <View style={styles.content}>
 <Image 
   source={
@@ -151,19 +168,20 @@ const handlePlayPause= async()=>{
             onPress={() => player.playPrevious()}
             style={styles.roundButton}
           >
-            <MaterialCommunityIcons name="skip-previous" size={70} color="white" />
+                <Ionicons name="play-skip-back" size={50} color='white' />
           </TouchableOpacity>
 
       
 {
    playbackState.state==State.Buffering?
-   <ActivityIndicator color="white" size={40}/>:
+   <ActivityIndicator color="white" size={90}/>:
           <TouchableOpacity onPress={handlePlayPause}>
             {
-          isPlaying?
-                <MaterialCommunityIcons name="pause" size={70} color="white" />
-                :
-                 <MaterialCommunityIcons name="play" size={70} color="white" />
+              <Ionicons
+                    name={isPlaying ? 'pause-circle' : 'play-circle'}
+                    size={90}
+                    color="white"
+                  />
                 
             }
           </TouchableOpacity>}
@@ -172,7 +190,7 @@ const handlePlayPause= async()=>{
             onPress={() => player.playNext()}
 
           >
-            <MaterialCommunityIcons name="skip-next" size={70} color="white" />
+                   <Ionicons name="play-skip-forward" size={50} color="white" />
           </TouchableOpacity>
         </View>
 

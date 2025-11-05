@@ -69,14 +69,7 @@ import LoadingIndicatior from './LoadingIndicatior';
         >
         
             <View style={styles.blurWrapper}>
-              <BlurView
-                style={StyleSheet.absoluteFill}
-                blurType="light"
-                blurRadius={20}
-                blurAmount={4}
-                overlayColor=""
-              
-              />
+            
      
               <View style={styles.content}>
                 <Image
@@ -114,9 +107,9 @@ import LoadingIndicatior from './LoadingIndicatior';
             </View>
       
         </TouchableOpacity>
-        <Modal visible={isFullScreen} animationType='fade'  onRequestClose={()=>{
+        <Modal visible={isFullScreen} animationType='slide'  onRequestClose={()=>{
             setIsFullScreen(false)
-        }}>
+        }} >
             <FullScreenPlayer currentTrack={currentTrack} visible={setIsFullScreen}/>
         </Modal>
       
@@ -160,7 +153,7 @@ import LoadingIndicatior from './LoadingIndicatior';
       marginRight: 15,
     },
     text: {
-      color: 'white',
+      color: 'rgba(216, 246, 163, 1)',
       fontFamily: 'Rubik-SemiBold',
       fontSize: 12,
     },

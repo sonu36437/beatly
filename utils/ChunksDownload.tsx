@@ -2,7 +2,7 @@ import axios from "axios";
 import RNFS from "react-native-fs";
 import { fromByteArray } from "base64-js";
 import { innertube } from "..";
-import { ToastAndroid } from "react-native";
+import { Platform, ToastAndroid } from "react-native";
 import notifee from '@notifee/react-native';
 import Realm from "realm";
 import DownloadDB from "../databases/DownloadDb";
@@ -28,7 +28,7 @@ function formatThumnail(song: any) {
 
 export const deleteParticularSong = async (realm:Realm,song:any) => {
   
- const songPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp3`;
+ const songPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp4`;
 const thumbnailPath = `${RNFS.DocumentDirectoryPath}/${song.id}.jpg}`
  const isDownloaded = await RNFS.exists(songPath);
  const isThumbnailDownloaded = await RNFS.exists(thumbnailPath);
@@ -136,7 +136,7 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
 
     })
 
-    const outputPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp3`;
+    const outputPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp4`;
     const thumbnailLoacation = `${RNFS.DocumentDirectoryPath}/${song.id}.jpg}`
 
     if (await RNFS.exists(outputPath)) {
@@ -147,7 +147,7 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
 
     const response = await innertube.player(song.id);
     const audioOnlyLink = response.filter((item: any) => {
-        return item.mimeType.includes("audio/webm")
+        return item.mimeType.includes("audio/mp4")
 
     })
     const songUrl: string = audioOnlyLink[audioOnlyLink.length - 1].url;
@@ -204,15 +204,29 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
     const thumbnailResult = await thumbnailDownload.promise;
     console.log("Thumbnail downloaded:", thumbnailResult);
 
-    const songMetaData = {
-        id: song.id,
-        title: song.title,
-        artist: song.artist,
-        thumbnail: `file://${thumbnailLoacation}`,
-        url: `file://${outputPath}`,
+    // const songMetaData = {
+    //     id: song.id,
+    //     title: song.title,
+    //     artist: song.artist,
+    //     thumbnail: `file://${thumbnailLoacation}`,
+    //     url: `file://${outputPath}`,
 
 
-    }
+    // }
+
+const songMetaData = {
+  id: song.id,
+  title: song.title,
+  artist: song.artist,
+
+   thumbnail: Platform.OS === "ios"
+      ? thumbnailLoacation
+      : `file://${thumbnailLoacation}`,
+  url:
+    Platform.OS === "ios"
+      ? outputPath
+      : `file://${outputPath}`,
+};
 
     console.log("mergeing done ");
 

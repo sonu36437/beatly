@@ -191,142 +191,199 @@ function SearchScreen() {
     );
 }
 
-
 function SearchResult() {
-    const navigation = useNavigation();
-    const route = useRoute();
-    const { query } = route.params;
-    const [result, setResult] = useState<any[]>([]);
-    const [paginationToken, setPaginationToken] = useState<string | undefined>("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [isMore, setIsMore] = useState(false);
-    const [error, setError] = useState<string>("");
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { query } = route.params;
+  const [result, setResult] = useState<any[]>([]);
+  const [paginationToken, setPaginationToken] = useState<string | undefined>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMore, setIsMore] = useState(false);
+  const [error, setError] = useState<string>('');
 
-    useEffect(() => {
-        if (query) {
-            search(query);
-        }
-    }, [query]);
+  useEffect(() => {
+    if (query) search(query);
+  }, [query]);
 
-    const search = async (searchQuery: string) => {
-        setIsLoading(true);
-        try {
-            const cleanedInput = searchQuery
-                .replace(/\bsongs?\b/gi, "")
-                .replace(/\s+/g, " ")
-                .trim();
+  const search = async (searchQuery: string) => {
+    setIsLoading(true);
+    try {
+      const cleanedInput = searchQuery
+        .replace(/\bsongs?\b/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim();
 
-            const result = await innertube.search(cleanedInput.toLowerCase() + " song ");
+      const result = await innertube.search(cleanedInput.toLowerCase() + ' song ');
+      const filtered = result.results.filter((item: any) => item?.durationInSeconds > 60);
 
-            const videoGreaterThanSeventySeconds = result.results.filter(
-                (item: any) => item?.durationInSeconds > 60
-            );
-            setResult(videoGreaterThanSeventySeconds);
-            setPaginationToken(result.continuationToken);
-        } catch (e: any) {
-            console.log(e);
-            setError(e.message || "Something went wrong");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const searchContinuation = async () => {
-        if (isMore || !paginationToken || result.length === 0) return;
-        setIsMore(true);
-        try {
-            const response = await innertube.fectchSearchContinuation(paginationToken);
-            const videoGreaterThanSeventySeconds = response.results.filter(
-                (item: any) => item?.durationInSeconds > 60
-            );
-            setResult((prev) => [...prev, ...videoGreaterThanSeventySeconds]);
-            setPaginationToken(response.continuationToken);
-        } catch (e) {
-            return;
-        } finally {
-            setIsMore(false);
-        }
-    };
-
-    const handleSongItemClick = useCallback((item: any) => {
-        player.playSingleAndGetSuggestions(item);
-    }, []);
-
-    const renderItem = ({ item }: any) => {
-        if (!item?.id || !item?.title) return null;
-        return (
-            <SongItem
-                song={item}
-                clickedOne={() => {
-                    handleSongItemClick(item);
-                }}
-            />
-        );
-    };
-    if(result.length==0 && !isLoading){
-        return (
-            <View style={{flex:1, backgroundColor:"black",justifyContent:'center',alignItems:'center'}}>
-                <Text style={{fontFamily:"Rubik-Bold",color:'white'}}>No Items found</Text>
-
-            </View>
-        )
+      setResult(filtered);
+      setPaginationToken(result.continuationToken);
+    } catch (e: any) {
+      console.log(e);
+      setError(e.message || 'Something went wrong');
+    } finally {
+      setIsLoading(false);
     }
+  };
 
+  const searchContinuation = async () => {
+    if (isMore || !paginationToken || result.length === 0) return;
+    setIsMore(true);
+    try {
+      const response = await innertube.fectchSearchContinuation(paginationToken);
+      const filtered = response.results.filter((item: any) => item?.durationInSeconds > 60);
+      setResult(prev => [...prev, ...filtered]);
+      setPaginationToken(response.continuationToken);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsMore(false);
+    }
+  };
+
+  const handleSongItemClick = useCallback((item: any) => {
+    player.playSingleAndGetSuggestions(item);
+  }, []);
+
+  const renderItem = ({ item }: any) => {
+    if (!item?.id || !item?.title) return null;
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-            <View style={styles.container}>
-                <View style={{flexDirection:"row" ,justifyContent:"space-between",alignItems:'center' ,paddingHorizontal:20}}>
-                    <View style={{width:"80%"}}>
-                        <Text style={styles.title} numberOfLines={1}>{query}</Text>
-                    </View>
-
-                  <TouchableOpacity onPress={()=>{
-                    navigation.navigate("SearchScreen",{query:query});
-                
-                  }} style={{backgroundColor:"white", padding:5,borderRadius:50}}>
-                      <Ionicons name="search" size={25} color="black"/>
-                  </TouchableOpacity>
-                </View>
-
-                {isLoading ? (
-                    <ActivityIndicator color="white" size="large" />
-                ) : (
-                    <FlatList
-                        data={result}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => item.id + index}
-                        initialNumToRender={30}
-                        maxToRenderPerBatch={5}
-                        contentContainerStyle={{ paddingBottom: 200, paddingTop: 20 }}
-                        onEndReached={searchContinuation}
-                        onEndReachedThreshold={0.8}
-                        windowSize={10}
-                        getItemLayout={(_, index) => ({
-                            length: ITEM_HEIGHT,
-                            offset: ITEM_HEIGHT * index,
-                            index,
-                        })}
-                        ListFooterComponent={
-                            isMore ? <ActivityIndicator color="white" /> : null
-                        }
-                    />
-                )}
-            </View>
-        </SafeAreaView>
+      <SongItem
+        song={item}
+        clickedOne={() => handleSongItemClick(item)}
+      />
     );
+  };
+
+  if (result.length === 0 && !isLoading) {
+    return (
+      <SafeAreaView style={styles.emptyContainer}>
+        <Ionicons name="musical-notes-outline" size={70} color="gray" />
+        <Text style={styles.emptyText}>No Songs Found</Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={22} color="white" />
+          <Text style={styles.backText}>Go Back</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backIcon}>
+          <Ionicons name="arrow-back" size={26} color="white" />
+        </TouchableOpacity>
+
+        <View style={styles.queryContainer}>
+          <Text style={styles.queryText} numberOfLines={1}>
+            {query}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchScreen', { query })}
+          style={styles.searchIcon}>
+          <Ionicons name="search" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator color="white" size="large" />
+          <Text style={styles.loadingText}>Searching songs...</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={result}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => item.id + index}
+          contentContainerStyle={styles.listContent}
+          onEndReached={searchContinuation}
+          onEndReachedThreshold={0.8}
+          ListFooterComponent={
+            isMore ? (
+              <ActivityIndicator color="white" size="small" style={{ marginVertical: 20 }} />
+            ) : null
+          }
+        />
+      )}
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    paddingHorizontal:10,
-        paddingTop: 30,
-    },
-    title: {
-        color: "#ffffff",
-        fontSize: 20,
-        fontFamily: "Rubik-Bold",
-
-        marginVertical: 10,
-    },
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingTop: Platform.OS === 'ios' ? 10 : 5,
+    justifyContent: 'space-between',
+  },
+  backIcon: {
+    padding: 8,
+  },
+  queryContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  queryText: {
+    color: 'white',
+    fontFamily: 'Rubik-Bold',
+    fontSize: 20,
+  },
+  searchIcon: {
+    backgroundColor: 'white',
+    padding: 6,
+    borderRadius: 50,
+  },
+  listContent: {
+    paddingTop: 20,
+    paddingBottom: 100,
+    paddingHorizontal: 10,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: 'white',
+    marginTop: 10,
+    fontFamily: 'Rubik-Bold',
+  },
+  emptyContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: 'gray',
+    fontFamily: 'Rubik-Bold',
+    marginTop: 10,
+    fontSize: 16,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 30,
+    backgroundColor: '#222',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  backText: {
+    color: 'white',
+    marginLeft: 8,
+    fontFamily: 'Rubik-Bold',
+  },
 });
