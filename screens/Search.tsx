@@ -320,12 +320,13 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: 'black',
+    paddingTop:25
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingTop: Platform.OS === 'ios' ? 10 : 5,
+  
     justifyContent: 'space-between',
   },
   backIcon: {

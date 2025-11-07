@@ -38,7 +38,7 @@ export const usePreferenceStore = create<PreferenceStore>()(
           set({ loading: true, error: null });
 
           const response = await fetch(
-            'https://raw.githubusercontent.com/sonu36437/UserSongPref/main/pref.json'
+            'https://raw.githubusercontent.com/sonu36437/UserSongPref/refs/heads/main/pref.json'
           );
 
           const data = await response.json();

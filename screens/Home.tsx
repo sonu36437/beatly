@@ -197,7 +197,10 @@ useEffect(()=>{
             
           }}
           onSet={()=>{
-            navigation.navigate('userPref')
+           setModalVisible(false);
+  setTimeout(() => {
+    navigation.navigate('userPref');
+  }, 200);
           }}
           
           />

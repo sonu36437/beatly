@@ -43,7 +43,7 @@ export default function SuggestionModel({ onClose, onSet }: { onClose: () => voi
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.65)',
+    backgroundColor: 'rgba(210, 26, 26, 0)',
     justifyContent: 'center',
     alignItems: 'center',
   },
