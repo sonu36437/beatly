@@ -151,6 +151,7 @@ export default function MyTabs() {
     headerTitleStyle: {
       color: 'white',
       fontFamily: 'Rubik-Bold',
+      
     },
     headerBackground: () => (
       <BlurView

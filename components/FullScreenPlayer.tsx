@@ -13,10 +13,9 @@ import { useRealm } from '@realm/react';
 import useIsSongLiked from '../hooks/UseIsSongLiked';
 import useSongInDownload from '../hooks/UseSongInDownload';
 import useRepeatMode from '../hooks/useRepeatMode';
-import localImageLink from '.././images/first'
-import { play } from 'react-native-track-player/lib/src/trackPlayer';
+
 import { useNavigation } from '@react-navigation/native';
-import Modal from './Modal';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const formatTime = (seconds: number) => {
@@ -166,7 +165,7 @@ const handlePlayPause= async()=>{
         <View style={styles.controls}>
           <TouchableOpacity
             onPress={() => player.playPrevious()}
-            style={styles.roundButton}
+           
           >
                 <Ionicons name="play-skip-back" size={50} color='white' />
           </TouchableOpacity>

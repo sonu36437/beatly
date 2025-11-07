@@ -1,20 +1,32 @@
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity, Platform } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SongCard from '../components/SongCard';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { innertube } from '../index';
+import { CheckForUpdate } from '../utils/CheckForUpdate';
+import SongCard from '../components/SongCard';
+import LoadingIndicator from '../components/LoadingIndicatior';
+import UserPreference from './UserPreference';
+import { usePreferenceStore } from '../store/userPrefStore';
 import { SearchResult } from 'onlynativetube/utils/parsers';
-import LoadingIndicatior from '../components/LoadingIndicatior';
-import { useNavigation } from '@react-navigation/native';
-import { CacheData, GetAllCacheKeys, GetCache, HasValidCache, RemoveCache } from '../utils/Storage';
-import { CheckForUpdate, getAppCurrentVersion } from '../utils/CheckForUpdate';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { CacheData, GetCache, HasValidCache } from '../utils/Storage';
+import Modal from '../components/Modal';
+import SuggestionModel from '../components/SuggestionModel';
 
-const categories = [
-  { query: "top bollywood songs", Title: "Bollwood Hits" },
-  { query: "romantic songs", Title: "Romantic Songs" },
-  { query: "workout songs", Title: "Workout Songs" },
-  { query: "english songs", Title: "Top English Songs" },
-];
+const DEFAULT_CATEGORIES = ["Trending songs","Top English","Bollywood Hits","Hollywood Hits"];
+
+
+const Stack = createNativeStackNavigator();
 
 interface SearchResponse {
   results: SearchResult[];
@@ -22,169 +34,229 @@ interface SearchResponse {
 }
 
 export default function Home() {
-  const [songs, setSongs] = useState<SearchResponse[]>([]);
-  const [refresh, setRefresh] = useState(false);
-  const [wish, setWish] = useState<String>("");
-  const [error, setError] = useState<String>("")
+  return (
+    <Stack.Navigator initialRouteName="HomeFirst">
+      <Stack.Screen
+        name="HomeFirst"
+        component={HomeFirst}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="userPref"
+        component={UserPreference}
+        options={{
+          animation: 'slide_from_right',
+          headerShown: true,
+          headerStyle: { backgroundColor: 'black' },
+          headerTintColor: '#fff',
+          headerTitle: 'Choose Preferences',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function HomeFirst() {
   const navigation = useNavigation();
+  const { selectedCategories } = usePreferenceStore();
+  const [songs, setSongs] = useState<SearchResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [wish, setWish] = useState('');
+  const [modalVisible,setModalVisible]=useState(false);
+
   const wishUser = (): string => {
     const hour = new Date().getHours();
-
-    if (hour >= 5 && hour < 12) {
-      return "Good Morning 🌞";
-    } else if (hour >= 12 && hour < 17) {
-      return "Good Afternoon ☀️";
-    } else if (hour >= 17 && hour < 22) {
-      return "Good Evening 🌇";
-    } else {
-      return "Hey night owl sleep now⏰";
-    }
+    if (hour >= 5 && hour < 12) return 'Good Morning 🌞';
+    if (hour >= 12 && hour < 17) return 'Good Afternoon ☀️';
+    if (hour >= 17 && hour < 22) return 'Good Evening 🌇';
+    return 'Hey night owl, sleep now ⏰';
   };
 
-  let allsongs: SearchResponse[] = [];
-  const handleRefresh = async () => {
-    setRefresh(true);
-    setSongs([]);
-    allsongs = [];
-    await RemoveCache("homePageData");
-    await fetchSongs();
-    setRefresh(false);
-  }
   const fetchSongs = async () => {
-    const haveCache= await GetCache("homePageData");
-    const isCacheValid= await HasValidCache("homePageData");
-    console.log(isCacheValid);
-    if (haveCache.length>0 && isCacheValid) {
-      console.log("using cache data");
-      setSongs(haveCache);
-      return;
+  setLoading(true);
+  setSongs([]);
+  const haveCache= await GetCache("homePageData");
+  const isValid= await HasValidCache("homePageData")
+  if(haveCache && isValid){
+    console.log("using cache");
+    
+    setSongs(haveCache);
+    return;
 
-    }
-
-    for (let cat of categories) {
-      try {
-        const response: SearchResponse = await innertube.search(cat.query);
-        allsongs.push(response);
-        setSongs((prev) => [...prev, response])
-      } catch (err) {
-        console.log("Error fetching:", cat.Title, err);
-        setError(JSON.stringify(err));
-      }
-    }
-    await CacheData({ key: 'homePageData', data: allsongs, validity: 24 * 7 });
+  }
 
 
-  };
+  
 
+  const activeCategories =
+    selectedCategories.length > 0 ? selectedCategories : DEFAULT_CATEGORIES;
+   
+
+  try {
+   
+    const responses = await Promise.all(
+      activeCategories.map(async (category) => {
+        try {
+          const res: SearchResponse = await innertube.search(category+" songs");
+       
+       
+          return res;
+        } catch (error) {
+          console.log('Error fetching:', category, error);
+          return { results: [] };
+        }
+      })
+    );
+
+ 
+    setSongs(responses);
+    await CacheData({key:'homePageData',data:responses,validity:24*7});
+  } catch (err) {
+    console.log('Error in fetchSongs:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    setWish(wishUser())
-   Platform.OS==='android' && CheckForUpdate();
-    fetchSongs();
-  }, [])
+    setWish(wishUser());
+    if (Platform.OS === 'android') CheckForUpdate();
+  }, []);
 
-  const renderItem = ({ item, index }: { item: SearchResult, index: number }) => {
-    return <SongCard song={item} />;
-  };
+useEffect(()=>{
 
+  if(selectedCategories.length<=0){
+    setModalVisible(true);
+  }
+ const timeOut=setTimeout(() => {
+  fetchSongs();
+  
+ }, 500);
+ return()=>{
+  clearTimeout(timeOut);
+ }
+},[selectedCategories])
+
+  const renderItem = ({ item }: { item: SearchResult }) => (
+    <SongCard song={item} />
+  );
 
   return (
-    <SafeAreaView style={{
-      flex: 1,
-      // backgroundColor:'rgba(74, 8, 41, 0.8)'
-      backgroundColor: 'black'
-    }
-    }>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-
-
-
-        <ScrollView style={styles.scrollView} contentContainerStyle={
-          {
-            paddingBottom: 200,
-            paddingTop: 20
-          }
-
-        }
-          overScrollMode='always'
-          bounces={true}
-          bouncesZoom={true}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={{ paddingBottom: 200, paddingTop: 20 }}
           showsVerticalScrollIndicator={false}
-          
-
         >
-          <View style={{ height: 50,width:"100%", flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10}}>
-            <Text style={{ fontFamily: "Rubik-Bold", fontSize: 25, color: "white" }}>{wish}</Text>
-            {/* <TouchableOpacity style={{height:40,width:20,backgroundColor:'red'}} 
-            onPress={()=>{
-              CheckForUpdate()
-            }}
-            
-            ></TouchableOpacity> */}
+          
+          <View style={styles.headerRow}>
+            <Text style={styles.greeting}>{wish}</Text>
+            <TouchableOpacity
         
+              onPress={() => navigation.navigate('userPref')}
+            >
+        <Ionicons name="settings" color="white" size={40}/>
 
-
+            
+            </TouchableOpacity>
           </View>
-          {categories.map((item, index) => (
-            <View key={index} style={styles.categoryContainer}>
-              <Text style={styles.categoryTitle}>{item.Title}</Text>
-              {songs[index]?.results && songs[index].results.length > 0 ? (
+
+          {(selectedCategories.length > 0
+            ? selectedCategories
+            : DEFAULT_CATEGORIES
+          ).map((category, index) => (
+            <View key={index.toString()} style={styles.categoryContainer}>
+              <Text style={styles.categoryTitle}>{category}</Text>
+              {loading && !songs[index]?.results ? (
+                <LoadingIndicator />
+              ) : (
                 <FlatList
-                  data={songs[index].results}
+                  data={songs[index]?.results || []}
                   renderItem={renderItem}
-                  keyExtractor={(item, itemIndex) => item.id + itemIndex}
+                  keyExtractor={(item, idx) =>
+                    item.id ? item.id.toString() : idx.toString()
+                  }
                   horizontal
+                  nestedScrollEnabled
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.flatListContent}
                 />
-              ) : (
-                <LoadingIndicatior />
               )}
-
             </View>
           ))}
         </ScrollView>
+        <Modal visible={modalVisible} animationType='slide'>
+          <SuggestionModel onClose={()=>{
+            setModalVisible(!modalVisible)
+            
+          }}
+          onSet={()=>{
+            navigation.navigate('userPref')
+          }}
+          
+          />
+        </Modal>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
   container: {
     flex: 1,
-    paddingTop: 0,
-    // backgroundColor:'rgba(53, 1, 27, 0.8)'
-    backgroundColor: 'black'
-
-
+    backgroundColor: 'black',
+    paddingHorizontal:5
   },
   scrollView: {
     flex: 1,
-
-
-
+  },
+  headerRow: {
+    height: 50,
+    width: '100%',
+    flexDirection: 'row',
+    paddingTop:10,
+   marginBottom:20,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  greeting: {
+    fontFamily: 'Rubik-Bold',
+    fontSize: 25,
+    color: 'white',
+  },
+  prefButton: {
+    backgroundColor: 'white',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  prefButtonText: {
+    color: 'black',
+    fontFamily: 'Rubik-Medium',
+  },
+  prefInfo: {
+    color: '#1DB954',
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
   categoryContainer: {
-
     height: 250,
-    width: "100%"
-
+    width: '100%',
   },
   categoryTitle: {
     fontSize: 18,
-    fontFamily: "Rubik-Bold",
+    fontFamily: 'Rubik-Bold',
     paddingHorizontal: 10,
     marginBottom: 10,
-    color: '#ffffffff',
+    color: 'white',
   },
   flatListContent: {
     paddingHorizontal: 1,
-  },
-  loadingText: {
-    textAlign: 'center',
-    fontFamily: 'Rubik-Bold',
-    color: 'white'
-
-
   },
 });

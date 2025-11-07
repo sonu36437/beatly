@@ -45,10 +45,7 @@ export default function InfoScreen() {
             <Ionicons name="apps-outline" size={20} color="#ccc" />
             <Text style={styles.text}>Version: {DeviceInfo.getVersion()}</Text>
           </View>
-          <View style={styles.row}>
-            <Ionicons name="time-outline" size={20} color="#ccc" />
-            <Text style={styles.text}>Last Updated: Sep 27, 2025</Text>
-          </View>
+          
         </View>
 
     
