@@ -124,16 +124,21 @@ function HomeFirst() {
   }, []);
 
 useEffect(()=>{
-
-  if(selectedCategories.length<=0){
-    setModalVisible(true);
-  }
+  console.log(selectedCategories.length);
+  
+ const checkModalTimeout = setTimeout(() => {
+    if (selectedCategories.length <= 0) {
+      setModalVisible(true);
+    }
+  }, 1000);
  const timeOut=setTimeout(() => {
   fetchSongs();
   
  }, 500);
  return()=>{
   clearTimeout(timeOut);
+  clearTimeout(checkModalTimeout);
+  
  }
 },[selectedCategories])
 
