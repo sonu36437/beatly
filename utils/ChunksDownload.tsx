@@ -23,12 +23,10 @@ function formatThumnail(song: any) {
 
 }
 
-
-
-
 export const deleteParticularSong = async (realm:Realm,song:any) => {
-  
- const songPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp4`;
+const currentSongPath=`${RNFS.DocumentDirectoryPath}/${song.id}.mp4`?`${RNFS.DocumentDirectoryPath}/${song.id}.mp4`:`${RNFS.DocumentDirectoryPath}/${song.id}.mp3`
+//  const songPath = `${RNFS.DocumentDirectoryPath}/${song.id}.mp4`;
+const songPath=currentSongPath;
 const thumbnailPath = `${RNFS.DocumentDirectoryPath}/${song.id}.jpg}`
  const isDownloaded = await RNFS.exists(songPath);
  const isThumbnailDownloaded = await RNFS.exists(thumbnailPath);
@@ -58,7 +56,7 @@ async function getFileSize(url: string): Promise<number> {
     }
     return parseInt(size, 10);
 }
-
+  
 //download chunnk function 
 async function downloadChunks({ url, totalFileSize, tempDowloadLocation, ranges, onProgress }: { url: string, totalFileSize: number, tempDowloadLocation: string, ranges: range[], onProgress?: (progress: number, downloaded: string) => void }): Promise<string[]> {
 
