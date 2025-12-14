@@ -17,6 +17,7 @@ import {
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LoadingIndicatior from './LoadingIndicatior';
+import LinearGradient from 'react-native-linear-gradient';
   
  export function PlayButton({size=30}:{size:number}) {
 
@@ -67,6 +68,30 @@ import LoadingIndicatior from './LoadingIndicatior';
          }}
           style={[styles.container,{bottom:72+inset.bottom}]}
         >
+            <View style={[StyleSheet.absoluteFill,{flex:1}]}>
+               <Image 
+            source={
+              currentTrack?.artwork 
+                ? { uri: currentTrack.artwork }   
+                : require("../logo.jpg")        
+            } 
+            style={StyleSheet.absoluteFill}
+             
+            blurRadius={50}
+          />
+            <LinearGradient
+              colors={[
+                 'rgba(0,0,0,0.8)', 
+                 'rgba(0,0,0,0.7)',
+                'rgba(0, 0, 0, 0.8)',  // bottom (dark)
+                
+                // top (transparent)
+              ]}
+              // start={{ x: 0.5, y: 1 }}
+              // end={{ x: 0.5, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+                </View>
         
             <View style={styles.blurWrapper}>
             
