@@ -17,6 +17,7 @@ import useRepeatMode from '../hooks/useRepeatMode';
 import { useNavigation } from '@react-navigation/native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -99,14 +100,31 @@ const handlePlayPause= async()=>{
   }, [isPlaying, togglePlayPause]);
 
   return (
-    <View style={StyleSheet.absoluteFill}>
-      <BlurView
-        style={StyleSheet.absoluteFill}
-        blurType="dark"
-        blurRadius={20}
-        blurAmount={10}
-        overlayColor=""
-      />
+    <View style={{flex:1 }}>
+      <View style={[StyleSheet.absoluteFill,{flex:1}]}>
+     <Image 
+  source={
+    currentTrack?.artwork 
+      ? { uri: currentTrack.artwork }   
+      : require("../logo.jpg")        
+  } 
+  style={StyleSheet.absoluteFill}
+   
+  blurRadius={50}
+/>
+  <LinearGradient
+    colors={[
+       'rgba(0,0,0,0.0)', 
+       'rgba(0,0,0,0.3)',
+      'rgba(0, 0, 0, 0.7)', 
+      
+
+    ]}
+ 
+    style={StyleSheet.absoluteFill}
+  />
+      </View>
+     
   {Platform.OS === "ios" && (
   <TouchableOpacity
     style={{
@@ -204,16 +222,16 @@ const handlePlayPause= async()=>{
 
             }}
           >
-            <MaterialCommunityIcons name="download" size={24} color={isInDownload ? "rgba(78, 77, 77, 1)" : "rgba(94, 255, 0, 1)"} />
-            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{isInDownload ? "Downloaded" : "Download"}</Text>
+            <MaterialCommunityIcons name="download" size={24} color={isInDownload ? "rgba(78, 77, 77, 1)" : "rgba(255, 221, 0, 1)"} />
+            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10,color:"white" }}>{isInDownload ? "Downloaded" : "Download"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton} onPress={() => { handleFavToggle() }}>
-            <MaterialCommunityIcons name="heart" size={24} color={isSongLiked ? "red" : "white"} />
-            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{isSongLiked ? "Liked" : "Like"}</Text>
+            <MaterialCommunityIcons name="heart" size={24} color={isSongLiked ? "pink" : "white"} />
+            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10,color:"white"}}>{isSongLiked ? "Liked" : "Like"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton} onPress={handleRepeatMode}>
-            <MaterialCommunityIcons name="repeat" size={24} color={repeatMode ? "rgba(94, 255, 0, 1)" : "white"} />
-            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 }}>{repeatMode ? "Repeat on" : "Repeat off"}</Text>
+            <MaterialCommunityIcons name="repeat" size={24} color={repeatMode ? "rgba(240, 209, 5, 1)" : "white"} />
+            <Text style={{ fontFamily: 'Rubik-Bold', fontSize: 10 ,color:'white'}}>{repeatMode ? "Repeat on" : "Repeat off"}</Text>
           </TouchableOpacity>
         </View>
       </View>
