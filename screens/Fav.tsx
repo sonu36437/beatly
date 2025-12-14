@@ -51,7 +51,7 @@ export default function Fav() {
                    windowSize={10}
                    removeClippedSubviews={true}
                    onEndReachedThreshold={0.8}
-                   contentContainerStyle={{paddingBottom: 200, paddingTop: 70}}
+                   contentContainerStyle={{paddingBottom: 200}}
                    
                    getItemLayout={(item,index)=>{
                      return{

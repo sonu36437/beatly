@@ -25,7 +25,13 @@ export default function UserPreference() {
   } = usePreferenceStore();
 
   useEffect(() => {
-    fetchPreferences();
+
+   
+setTimeout(()=>{
+      fetchPreferences()
+
+
+},500)  
   }, []);
 
   if (loading) {
@@ -76,7 +82,7 @@ export default function UserPreference() {
             const isSelected = selected.some((p) => p=== item);
             return (
               <TouchableOpacity
-                key={index.toString()}
+                key={index.toString()+item}
                 onPress={() => onToggle(item)}
               >
                 <View

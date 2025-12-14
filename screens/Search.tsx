@@ -166,7 +166,7 @@ function SearchScreen() {
                             <TouchableOpacity onPress={() => {
                                 handleRemove(index)
                             }}>
-                                <Ionicons name="close-circle-outline" size={20} />
+                                <Ionicons name="close-circle-outline" size={20}  color="white"/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
+    paddingTop:20,
   
     justifyContent: 'space-between',
   },

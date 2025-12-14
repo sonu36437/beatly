@@ -44,12 +44,15 @@ export default function Home() {
       <Stack.Screen
         name="userPref"
         component={UserPreference}
+    
         options={{
-          animation: 'slide_from_right',
+          animation:'slide_from_right',
           headerShown: true,
           headerStyle: { backgroundColor: 'black' },
           headerTintColor: '#fff',
           headerTitle: 'Choose Preferences',
+        
+          
         }}
       />
     </Stack.Navigator>

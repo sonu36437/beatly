@@ -9,17 +9,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Home from '../screens/Home';
 import AppInfo from '../screens/AppInfo'
-import SearchScreen from '../screens/SearchScreen';
 import Downloads from '../screens/Downloads';
-import PopUpScreen from '../screens/PopUpScreen';
 import { usePlayerStore } from '../store/PlayerStore';
 import MiniPlayer from '../components/MiniPlayer';
 import Fav from '../screens/Fav';
 import Modal from '../components/Modal';
 import { useModalStore } from '../store/ModalStore';
 import TrackPlayer from 'react-native-track-player';
-import { SafeAreaView ,useSafeAreaInsets} from 'react-native-safe-area-context';
-import { Height } from '../constants/ScreenProportion';
+import { useSafeAreaInsets} from 'react-native-safe-area-context';
 import Search from '../screens/Search';
 
 
@@ -131,6 +128,8 @@ export default function MyTabs() {
         screenOptions={{
           headerShown: false,
           animation: 'shift',
+          
+          
         }}
         tabBar={(props) => <MyTabBar {...props} />}
       >
@@ -142,26 +141,17 @@ export default function MyTabs() {
   component={Fav}
   options={{
     headerShown: true,
-    headerTransparent:true,
-    
-
-   
-    
+  
     headerTitle: 'Favourite songs',
     headerTitleStyle: {
       color: 'white',
       fontFamily: 'Rubik-Bold',
       
     },
-    headerBackground: () => (
-      <BlurView
-        style={[StyleSheet.absoluteFill,{backgroundColor:'rgba(0, 0, 0, 0.5)'}]}
-        blurType="dark"
-        blurAmount={20}
-        blurRadius={20}
-        overlayColor=""
-      />
-    ),
+    headerStyle:{
+      backgroundColor:'black'
+    }
+  
   }}
 />
 
