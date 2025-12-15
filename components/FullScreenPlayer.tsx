@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator, ToastAndroid, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator, ToastAndroid, Platform, StatusBar } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, { useProgress, Event, usePlaybackState, State, RepeatMode } from 'react-native-track-player';
@@ -46,6 +46,9 @@ export default function FullScreenPlayer({ currentTrack ,visible }: any) {
   const { isPlaying, togglePlayPause } = usePlayerStore();
   const [isInDownload, updateState] = useSongInDownload(trackData);
   const navigation =useNavigation();
+  useEffect(()=>{
+StatusBar.setHidden(true);
+  },[])
 
 const handlePlayPause= async()=>{
    isPlaying?await TrackPlayer.pause():
@@ -108,15 +111,15 @@ const handlePlayPause= async()=>{
       ? { uri: currentTrack.artwork }   
       : require("../logo.jpg")        
   } 
-  style={StyleSheet.absoluteFill}
+  style={[StyleSheet.absoluteFill,{resizeMode:'cover'}]}
    
-  blurRadius={50}
+  blurRadius={30}
 />
   <LinearGradient
     colors={[
        'rgba(0,0,0,0.0)', 
-       'rgba(0,0,0,0.3)',
-      'rgba(0, 0, 0, 0.7)', 
+       'rgba(0,0,0,0.0)',
+      'rgba(0, 0, 0, 0.4)', 
       
 
     ]}
