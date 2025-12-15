@@ -9,6 +9,8 @@ import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { DarkTheme, NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+import { OpenOptimizationSettings, BatteryOptEnabled } from "react-native-battery-optimization-check";
+
 
 
 const Stack = createNativeStackNavigator();
@@ -20,11 +22,15 @@ import FavSong from './databases/FavSongDb'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import UserInfoGatherScreen from './screens/UserInfoGatherScreen'
 import DownloadDB from './databases/DownloadDb'
+import { isBatteryOptimizationEnabled, openBatteryOptimizationSettings } from './utils/disableBatteryOptimization'
 
 
 
 export default function App() {
   const { setTrack, currentTrack } = usePlayerStore();
+
+
+ 
 
   useEffect(() => {
 
@@ -83,6 +89,20 @@ export default function App() {
     }
 
   }, [])
+
+  useEffect(()=>{
+   async function AlertforDisableBatteryOpt() {
+    let res= await isBatteryOptimizationEnabled()
+    if(res){
+      openBatteryOptimizationSettings();
+
+    }
+    
+   }
+   AlertforDisableBatteryOpt(); 
+    
+
+  },[])
   return (
     <>
 

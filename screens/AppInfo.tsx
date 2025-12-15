@@ -7,15 +7,26 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DeviceInfo from "react-native-device-info";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import BatteryOptimizationCheck from 'react-native-battery-optimization-check'
+import { isBatteryOptimizationEnabled, openBatteryOptimizationSettings } from "../utils/disableBatteryOptimization";
+
+
+
+
+
+  
+
 
 export default function InfoScreen() {
   const openGitHub = () => {
     Linking.openURL("https://github.com/sonu36437/beatly");
   };
+  
 
   const openLicense = () => {
     Linking.openURL("https://opensource.org/licenses/MIT");
@@ -82,6 +93,13 @@ export default function InfoScreen() {
           <TouchableOpacity onPress={openFeedback} style={styles.rowButton}>
             <Ionicons name="mail-outline" size={22} color="#ff4c4c" />
             <Text style={styles.link}>Send Feedback</Text>
+          </TouchableOpacity>
+           <TouchableOpacity onPress={
+            async()=>{
+            await isBatteryOptimizationEnabled();
+            }} style={styles.rowButton}>
+            <Ionicons name="mail-outline" size={22} color="#ff4c4c" />
+            <Text style={styles.link}>check batteryopt</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

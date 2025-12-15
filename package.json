@@ -28,6 +28,7 @@
     "onlynativetube": "^1.0.30",
     "react": "19.2.0",
     "react-native": "0.83.0",
+    "react-native-battery-optimization-check": "^1.0.8",
     "react-native-device-info": "^15.0.1",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.29.1",
