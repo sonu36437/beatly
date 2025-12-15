@@ -75,7 +75,7 @@ import LinearGradient from 'react-native-linear-gradient';
                 ? { uri: currentTrack.artwork }   
                 : require("../logo.jpg")        
             } 
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill,{height:"100%",overflow:'hidden',resizeMode:'cover'}]}
              
             blurRadius={50}
           />
@@ -93,7 +93,7 @@ import LinearGradient from 'react-native-linear-gradient';
             />
                 </View>
         
-            <View style={styles.blurWrapper}>
+     
             
      
               <View style={styles.content}>
@@ -129,7 +129,7 @@ import LinearGradient from 'react-native-linear-gradient';
                 </TouchableOpacity> }
                 
               </View>
-            </View>
+       
       
         </TouchableOpacity>
         <Modal visible={isFullScreen} animationType='slide'  onRequestClose={()=>{
@@ -151,14 +151,15 @@ import LinearGradient from 'react-native-linear-gradient';
       position: 'absolute',
    
       width: '100%',
-      height: 90,
+      height: 80,
       alignSelf: 'center',
       justifyContent: 'center',
       borderRadius: 20,
       zIndex: 1,
+      
       elevation: 1, 
-      // backgroundColor:"rgba(52, 2, 34, 0.4)"
-      backgroundColor:'black'
+      backgroundColor:"rgba(52, 2, 34, 0.4)"
+    
     },
     blurWrapper: {
       flex: 1,
