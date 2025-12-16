@@ -93,7 +93,7 @@ android {
         applicationId "com.beatly"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-         versionCode 9
+        versionCode 9
         versionName "1.1.1"
          archivesBaseName = "beatly-v${versionName}-c${versionCode}"
         
@@ -112,7 +112,7 @@ android {
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
+            // see https://reactnative.dev/docs/signed-apk-android.cd
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
