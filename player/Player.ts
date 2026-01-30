@@ -67,15 +67,18 @@ class Player {
   }
   public async resetAndPlay(song: any) {
     console.log(song);
-    
+
     const response = !song?.url ? await innertube.player(song.id) : song?.url;
     let audioOnlyLink;
 
     if (!song?.url) {
       audioOnlyLink = response.filter((item: any) => {
-        return item.mimeType.includes("audio/mp4")
-
-      })
+        return (
+          item.itag === 18 &&
+          item.mimeType?.includes("video/mp4") &&
+          item.url
+        );
+      });
     }
     await TrackPlayer.reset()
     await TrackPlayer.add({
