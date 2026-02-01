@@ -73,11 +73,7 @@ class Player {
 
     if (!song?.url) {
       audioOnlyLink = response.filter((item: any) => {
-        return (
-          item.itag === 18 &&
-          item.mimeType?.includes("video/mp4") &&
-          item.url
-        );
+      return item.mimeType.includes("audio/mp4")
       });
     }
     await TrackPlayer.reset()

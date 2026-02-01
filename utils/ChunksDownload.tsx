@@ -147,10 +147,10 @@ export async function downloadSong({ song, chunkSize = 500 * 1024 }: { song: any
 
     const response = await innertube.player(song.id);
     const audioOnlyLink = response.filter((item: any) => {
-        return item.mimeType.includes("audio/mp4")
+       return item.mimeType.includes("audio/mp4")
 
     })
-    const songUrl: string = audioOnlyLink[audioOnlyLink.length - 1].url;
+    const songUrl: string = audioOnlyLink[audioOnlyLink.length - 1]?.url;
     let totalFileSize = await getFileSize(songUrl);
     const totalSizeInMb = (totalFileSize / 1024 / 1024).toFixed(2);
 

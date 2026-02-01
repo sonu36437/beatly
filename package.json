@@ -1,6 +1,6 @@
 {
   "name": "beatly",
-  "version": "1.0.4",
+  "version": "1.1.6",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -22,7 +22,7 @@
     "@shopify/flash-list": "^1.8.3",
     "axios": "^1.11.0",
     "base64-js": "^1.5.1",
-    "onlynativetube": "^1.0.28",
+    "onlynativetube": "^1.0.31",
     "react": "18.3.1",
     "react-native": "0.75.5",
     "react-native-device-info": "^14.0.4",
@@ -62,7 +62,7 @@
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
-     "@react-native-community/cli": "latest",
+    "@react-native-community/cli": "latest",
     "@react-native/babel-preset": "0.75.5",
     "@react-native/eslint-config": "0.75.5",
     "@react-native/metro-config": "0.75.5",
